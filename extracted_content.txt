@@ -1,0 +1,3860 @@
+Extraction of files (excluding node_modules)...
+-----------------------------------------------
+----- File: ./README.md -----
+# Getting Started with Create React App
+
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Available Scripts
+
+In the project directory, you can run:
+
+### `npm start`
+
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
+
+### `npm test`
+
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+
+### `npm run build`
+
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
+
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
+
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+### `npm run eject`
+
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+
+## Learn More
+
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+
+To learn React, check out the [React documentation](https://reactjs.org/).
+
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+----- File: ./dcorps.code-workspace -----
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {}
+}
+----- File: ./extract.sh -----
+#!/usr/bin/env bash
+#
+# extract_debug.sh
+#
+# Recursively extracts content from all files & folders (except node_modules),
+# skipping package-lock.json / yarn.lock, and skipping the output file itself.
+# Includes detailed debug output with `set -x`.
+
+# Turn on shell debugging (prints each command as it executes)
+set -x
+
+OUTFILE="extracted_content.txt"
+
+# Clear/create the output file
+echo "Extraction of files (excluding node_modules)..." > "$OUTFILE"
+echo "-----------------------------------------------" >> "$OUTFILE"
+
+function process_dir() {
+  local dir="$1"
+  echo "Processing directory: $dir"
+
+  for entry in "$dir"/*; do
+    [ -e "$entry" ] || continue
+    echo "  Found: $entry"
+
+    # Skip node_modules folder
+    if [[ "$entry" == *"/node_modules"* ]]; then
+      echo "  --> Skipping node_modules: $entry"
+      continue
+    fi
+
+    # Skip the output file itself to prevent infinite re-append
+    if [[ "$entry" == "./$OUTFILE" ]]; then
+      echo "  --> Skipping output file: $entry"
+      continue
+    fi
+
+    # Skip lock files that mention node_modules in plain text
+    if [[ "$entry" == *"package-lock.json" ]] || [[ "$entry" == *"yarn.lock" ]]; then
+      echo "  --> Skipping lock file: $entry"
+      continue
+    fi
+
+    # If it's a directory, recurse
+    if [ -d "$entry" ]; then
+      process_dir "$entry"
+    else
+      # It's a file; decide if binary or text
+      case "$entry" in
+        *.png|*.jpg|*.jpeg|*.gif|*.pdf|*.svg|*.ico|*.mp3|*.mp4|*.mov|*.avi|*.zip|*.tar|*.gz|*.exe)
+          echo "  --> BINARY file, listing only: $entry"
+          echo "----- File: $entry (BINARY FILE) -----" >> "$OUTFILE"
+          ;;
+        *)
+          echo "  --> TEXT file, dumping contents: $entry"
+          echo "----- File: $entry -----" >> "$OUTFILE"
+          cat "$entry" >> "$OUTFILE"
+          echo "" >> "$OUTFILE"
+          ;;
+      esac
+    fi
+  done
+}
+
+# Start from current directory
+process_dir "."
+
+echo "-----------------------------------------------" >> "$OUTFILE"
+echo "Extraction complete! Check $OUTFILE." >> "$OUTFILE"
+echo "Done."
+
+----- File: ./notes.md -----
+
+
+## Create new Branch
+
+git checkout develop
+
+git pull
+
+git checkout -b feat/original-dev
+
+git push -u origin feat/original-dev
+
+
+## Push to Github repo
+
+git checkout feat/original-dev
+git add . or path files
+git commit -m "Small Details"
+git push origin feat/original-dev
+
+----- File: ./npm -----
+
+----- File: ./package.json -----
+{
+  "name": "dcorps",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@heroicons/react": "^2.1.5",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-icons": "^5.4.0",
+    "react-router-dom": "^7.1.1",
+    "react-scripts": "^5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
+
+----- File: ./public/Untitled-1.png (BINARY FILE) -----
+----- File: ./public/body-bg.jpg (BINARY FILE) -----
+----- File: ./public/circles.png (BINARY FILE) -----
+----- File: ./public/cosmos-black.png (BINARY FILE) -----
+----- File: ./public/cosmos-white.png (BINARY FILE) -----
+----- File: ./public/dcorps-logo-black.png (BINARY FILE) -----
+----- File: ./public/dcorps-logo-white.png (BINARY FILE) -----
+----- File: ./public/favicon.ico (BINARY FILE) -----
+----- File: ./public/image.png (BINARY FILE) -----
+----- File: ./public/index.html -----
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <!-- Inside public/index.html, in the <head> section -->
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>dCorps Hub: Interplanetary Economy</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+</html>
+
+----- File: ./public/manifest.json -----
+{
+  "short_name": "React App",
+  "name": "Create React App Sample",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
+
+----- File: ./public/robots.txt -----
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow:
+
+----- File: ./public/sketch-dCorps.jpg (BINARY FILE) -----
+----- File: ./public/sketch-dCorps.png (BINARY FILE) -----
+----- File: ./public/sketch.png (BINARY FILE) -----
+----- File: ./public/x-black.png (BINARY FILE) -----
+----- File: ./public/x-white.png (BINARY FILE) -----
+----- File: ./src/App.css -----
+/* Color Variables */
+:root {
+  --bg-color: #0d0d0d;
+  --title-color: #0895ef;
+  --stage-color: #c802db;
+  --text-color: #f5f5f5;
+  --strong-color: #f5f5f5;
+  --border-color: #202020;
+  --sidebar-bg: #000000;
+  --top-bar-bg: #000000;
+  --content-bg: #000000;
+  --footer-bg: #000000;
+  --menu-section-separator: #2a2a2a;
+  --submenu-icon-color: #888888;
+  --highlight-color: #1f1f1f;
+  --active-color: #3d3d3d;
+  --hover-color: #0895ef;
+  --slogan-color: #bbb;
+  --open-app-bg: #000;
+  --open-app-bg-over: #0895ef;
+  --open-app-text: #fff;
+  --open-app-text-over: #fff;
+  --open-app-border: #fff;
+}
+
+.light-mode {
+  --bg-color: #f7f7f7;
+  --text-color: #3f3f3f;
+  --strong-color: #3f3f3f;
+  --title-color: #0895ef;
+  --stage-color: #c802db;
+  --border-color: #cccccc;
+  --sidebar-bg: #ffffff;
+  --top-bar-bg: #ffffff;
+  --content-bg: #ffffff;
+  --footer-bg: #ffffff;
+  --menu-section-separator: #cccccc;
+  --submenu-icon-color: #888888;
+  --highlight-color: #1f1f1f;
+  --active-color: #3d3d3d;
+  --hover-color: #0895ef;
+  --slogan-color: #555;
+  --open-app-bg: #fff;
+  --open-app-bg-over: #0895ef;
+  --open-app-text: #000;
+  --open-app-text-over: #000;
+  --open-app-border: #000;
+}
+
+
+/* Basic Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Roboto mono', monospace;
+  font-weight: lighter;
+  height: 100vh;
+} */
+
+body {
+  background: var(--bg-color) url('/public/body-bg.jpg') no-repeat center center fixed;
+  background-size: cover;
+  color: var(--text-color);
+  font-family: 'Arial', monospace;
+  font-weight: lighter;
+  height: 100vh;
+}
+
+
+h4 {
+  color: var(--title-color);
+  text-transform: uppercase;
+  /* padding-top: 1.33rem; */
+  padding-bottom: 1.33rem;
+}
+
+hr {
+  border: none;       
+  height: 1px;      
+  margin-top: 30px;  
+  margin-bottom: 30px;
+  background: var(--border-color);
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background-color: var(--sidebar-bg);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  border-right: 1px solid var(--border-color);
+  overflow-y: auto;
+}
+
+/* Logo and Under Development */
+.logo-container {
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+  gap: 0.3rem; 
+  margin-bottom: 1rem;
+}
+
+.logo-icon {
+  width: 60px; 
+  height: auto; 
+  object-fit: contain;
+}
+
+.logo-text {
+  font-family: 'Roboto mono', Courier, monospace;
+  font-size: 2.65rem; 
+  color: var(--text-color);
+  font-weight: lighter;
+  text-transform: none; 
+  letter-spacing: -0.15rem;
+}
+
+.under-development {
+  color: var(--title-color);
+  font-size: 0.8rem;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.menu-title {
+  font-size: 1rem;
+  color: var(--text-color);
+  font-weight: lighter;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 1.4rem 0; 
+  transition: color 0.3s ease;
+}
+
+.menu-title:hover {
+  color: #4cc9f1;
+}
+
+.menu-section:not(:first-child) .menu-title::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -1rem; 
+  width: calc(100% + 2rem); 
+  height: 1px;
+  background-color: var(--menu-section-separator);
+}
+
+/* Menu Items */
+.menu-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.menu-items.open {
+  max-height: 500px; 
+  padding-bottom: 20px;
+}
+
+/* Submenu Items */
+.menu-items li {
+  position: relative; 
+  padding-left: 1.5rem; 
+}
+
+/* Right-Pointing Triangle for Submenu Items */
+.menu-items li::before {
+  content: ''; 
+  position: absolute;
+  left: 0.5rem;
+  top: 50%; 
+  transform: translateY(-50%); 
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0.4rem 0 0.4rem 0.4rem; 
+  border-color: transparent transparent transparent var(--text-color); 
+  transition: border-color 0.3s ease; 
+}
+
+/* Submenu Item Links */
+.menu-items li a {
+  display: block;
+  padding-top: 0.6rem; 
+  padding-bottom: 0.6rem;
+  padding-left: 0rem;
+  padding-right: 0.1rem;
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease, padding-left 0.3s ease;
+}
+
+/* Hover Effects for Links and Triangle */
+.menu-items li a:hover {
+  color: var(--hover-color);
+  padding-left: 0.5rem; /* Maintain alignment with the triangle */
+}
+
+.menu-items li:hover::before {
+  border-color: transparent transparent transparent var(--hover-color);
+}
+
+/* Active Link Style */
+.menu-items li a.active {
+  color: var(--hover-color);
+}
+
+
+/* Logo Link */
+.logo-link {
+  text-decoration: none;
+}
+
+strong {
+  color: var(--strong-color);
+}
+
+
+.content-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* ensures scrolling if content exceeds viewport */
+}
+
+
+/* Content Area */
+.content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+
+/* Top Bar */
+.top-bar {
+  background-color: var(--top-bar-bg);
+  color: var(--text-color);
+  display: flex;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.top-bar-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.menu-col {
+  justify-content: flex-start;
+}
+
+.cosmos-col {
+  justify-content: center;
+}
+
+.social-col {
+  justify-content: center;
+}
+
+.button-col {
+  justify-content: flex-end;
+}
+
+.menu {
+  display: flex;
+}
+
+.menu a {
+  color: var(--text-color);
+  margin-right: 1rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.menu a:hover {
+  color: var(--hover-color);
+}
+
+.cosmos-sdk-text {
+  display: flex;
+  align-items: center;
+  color: var(--text-color);
+  font-size: 1rem; /* Optional: Adjust font size */
+}
+
+.cosmos-logo {
+  width: 24px;
+  height: 24px;
+  margin-left: 0.5rem;
+  object-fit: contain; /* Ensures proper scaling */
+}
+
+
+.social-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.social-logo {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.social-icons a {
+  color: var(--text-color);
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.social-icons a:hover {
+  color: var(--hover-color);
+}
+
+.open-app {
+  padding: 0.5rem 1rem;
+  background-color: var(--open-app-bg);
+  color: var(--open-app-text);
+  border: 1px solid var(--open-app-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.open-app:hover {
+  background-color: var(--open-app-bg-over);
+  color: var(--open-app-text-over);
+}
+
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-toggle input {
+  appearance: none;
+  width: 40px;
+  height: 20px;
+  background-color: var(--border-color);
+  border-radius: 10px;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-toggle input:checked {
+  background-color: var(--hover-color);
+}
+
+.theme-toggle input::before {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background-color: var(--text-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  transition: transform 0.3s ease;
+}
+
+.theme-toggle input:checked::before {
+  transform: translateX(20px);
+}
+
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: var(--content-bg);
+  overflow-y: auto;
+  /* ADDED TRANSITION + WIDTH APPROACH */
+  transition: width 0.3s ease;
+}
+
+.main-content.open {
+  width: calc(100% - 250px); /* when roadmap is open */
+}
+
+.main-content.collapsed {
+  width: 100%; /* when roadmap is collapsed */
+}
+
+/* New right-sidebar class */
+
+/* Animation start */
+
+/* A parent container that wraps both the handle and the aside content */
+.right-sidebar-wrapper {
+  position: relative; /* So the handle can be positioned absolutely relative to this wrapper */
+  height: 100%;       /* Match parent height (e.g. content-body) */
+  transition: transform 0.3s ease; /* Smooth slide transition */
+}
+
+/* By default (open), we show it at normal position (no horizontal shift) */
+.right-sidebar-wrapper.open {
+  transform: translateX(0);
+}
+
+/* When collapsed, we shift it off to the right (the width of the sidebar, e.g. 240px) */
+.right-sidebar-wrapper.collapsed {
+  transform: translateX(220px); 
+  /* Note: we use 220px, not 240, so a bit of the handle is still visible 
+     or you can do translateX(100%) if you prefer fully hidden. */
+}
+
+/* The handle arrow box */
+.right-sidebar-handle {
+  position: absolute;
+  top: 50%;       /* Center vertically in the wrapper */
+  left: -20px;    /* Sits slightly to the left of the aside so it floats near the edge */
+  transform: translateY(-50%);
+  width: 20px;    
+  height: 40px;
+  background-color: var(--border-color); /* Or any color you like */
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px 0 0 5px; /* A small rounded corner on the left side, for style */
+  cursor: pointer;
+  /* If you want a small border: border: 1px solid var(--border-color); */
+  transition: background-color 0.3s ease;
+}
+
+/* Hover effect on the handle */
+.right-sidebar-handle:hover {
+  background-color: var(--hover-color);
+  color: #fff; /* or keep it var(--text-color), your choice */
+}
+
+/* The actual aside content */
+.right-sidebar {
+  width: 240px;
+  background-color: var(--content-bg);
+  border-left: 1px solid var(--border-color);
+  padding: 1rem;
+  height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto; 
+}
+
+.right-sidebar {
+  width: 250px;
+  background-color: var(--content-bg);
+  border-left: 1px solid var(--border-color);
+  padding: 1.2rem;
+  overflow-y: auto;
+}
+
+/* New roadmap related classes */
+.roadmap-title {
+  color: var(--title-color);
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.roadmap-subtitle {
+  font-size: 0.8rem; /* or 0.85rem, something smaller */
+  color: var(--text-color); /* so it respects dark/light mode */
+  margin-top: 1rem;
+  margin-bottom: 0.8rem;
+  font-weight: normal; /* or lighter, if you want it more discreet */
+  text-decoration: underline;
+}
+
+.token-title {
+  color: var(--title-color);
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.roadmap-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.roadmap-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+/* New bullet classes */
+.bullet {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--text-color);
+  border-radius: 50%;
+  margin-right: 0.5rem;
+}
+
+.bullet.done {
+  background-color: var(--title-color); /* green fill for completed tasks */
+  border-color: var(--title-color);
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between; /* Move breadcrumb to the right */
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.breadcrumb {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.breadcrumb a {
+  color: #aaa;
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+.main-title {
+  font-size: 4rem; /* Restored to previous larger size */
+  color: var(--text-color);
+  letter-spacing: -0.3rem;
+  font-weight: lighter;
+}
+
+.current-stage {
+  color: var(--stage-color);
+}
+
+/* Content Wrapper */
+.content-wrapper {
+  /* background-color: var(--sidebar-bg); */
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  padding-left: .5rem;
+  /* padding: 2rem; */
+  /* border-radius: 8px; */
+  /* border: 1px solid var(--border-color); */
+  border-top: 1px solid var(--border-color);
+  /* border-bottom: 1px solid var(--border-color); */
+}
+
+/* General Text Formatting */
+.page-text {
+  line-height: 1.6; /* Adjust for readability */
+  margin-bottom: 1.5rem; /* Space between paragraphs */
+  font-size: 0.95rem; /* Adjust for desired text size */
+  font-weight: lighter;
+}
+
+/* Bold Emphasis */
+.page-text .highlight {
+  font-weight: bold;
+  color: var(--hover-color); /* Use a highlight color for emphasis */
+}
+
+/* Paragraph Breaks */
+.page-text p {
+  margin-bottom: 1.5rem; /* Ensure consistent spacing between paragraphs */
+}
+
+/* introduction text and image */
+.intro-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Ensures the top of text and image align */
+  gap: 2rem; /* Optional spacing between text and image */
+  margin-bottom: 2rem; /* Some spacing from next content if needed */
+}
+
+.intro-text {
+  flex: 0 0 60%;
+  /* You could also use width: 60%; */
+}
+
+.intro-image {
+  flex: 0 0 40%;
+  /* width: 40%; */
+}
+
+.intro-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Featured Section */
+.features-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+/* Card styling */
+.feature-card {
+  background-color: transparent;
+  border: 0.5px solid var(--border-color);
+  border-radius: 18px;
+  text-align: left;
+  width: 100%;
+  max-width: 460px;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  min-height: 100px; /* Ensure consistent height */
+}
+
+/* Icon Container - now aligned to the left */
+.icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.feature-icon {
+  color: var(--text-color);
+  width: 48px;
+  height: 48px;
+  transition: color 0.3s ease;
+}
+
+.feature-icon:hover {
+  color: var(--hover-color);
+}
+
+/* Title and Text */
+.feature-title {
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  color: var(--title-color);
+}
+
+.feature-text {
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.section-one-title {
+  color: var(--title-color);
+}
+
+.section-one-text {
+  color: var(--text-color);
+}
+
+.section-one-cards-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.section-one-card {
+  border: 0.5px solid var(--border-color);
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: transparent;
+  box-sizing: border-box;
+}
+
+.section-one-card-title {
+  color: var(--title-color);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-one-card-text {
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+/* Footer */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--footer-bg);
+  color: var(--text-color);
+  padding: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.footer-right {
+  display: flex;
+  gap: 1rem;
+}
+
+.footer-right a {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.footer-right a:hover {
+  color: var(--hover-color);
+}
+
+----- File: ./src/App.js -----
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Layout from './layouts/Layout';
+
+// Pages
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ExplorerPage from './pages/ExplorerPage';
+import VisionPage from './pages/VisionPage';
+import ArchitecturePage from './pages/ArchitecturePage';
+import TokenomicsPage from './pages/TokenomicsPage';
+import GovernancePage from './pages/GovernancePage';
+import RoadmapPage from './pages/RoadmapPage';
+import UseCasesPage from './pages/UseCasesPage';
+import CommunityPage from './pages/CommunityPage';
+import SecurityPage from './pages/SecurityPage';
+import GetInvolvedPage from './pages/GetInvolvedPage';
+import DeveloperPage from './pages/DeveloperPage';
+import TermsOfUsePage from './pages/TermsOfUsePage';
+
+// dCorps sub-pages
+import CorporationPage from './pages/dCorps/CorporationPage';
+import PublicCompanyPage from './pages/dCorps/PublicCompanyPage';
+import NonProfitPage from './pages/dCorps/NonProfitPage';
+
+// Blockchain sub-pages
+import MainHubPage from './pages/blockchain/MainHubPage';
+import SubHubPage from './pages/blockchain/SubHubPage';
+import SubChainPage from './pages/blockchain/SubChainPage';
+
+// Tokens sub-pages
+import DcorpPage from './pages/tokens/DcorpPage';
+import DsharesPage from './pages/tokens/DsharesPage';
+import OptionPage from './pages/tokens/OptionPage';
+
+// Suites sub-pages
+import CryptoMerchantPage from './pages/suites/CryptoMerchantPage';
+import InvoicingPayrollPage from './pages/suites/InvoicingPayrollPage';
+import HrSystemPage from './pages/suites/HrSystemPage';
+import TreasuryManagementPage from './pages/suites/TreasuryManagementPage';
+
+// Ecosystem sub-pages
+import DCorpsExplorerPage from './pages/ecosystem/DCorpsExplorerPage';
+import DSharesExchangePage from './pages/ecosystem/DSharesExchangePage';
+import DCorpsMarketplacePage from './pages/ecosystem/DCorpsMarketplacePage';
+import DSharesInitialOfferingPage from './pages/ecosystem/DSharesInitialOfferingPage';
+import InitialDexOfferingPage from './pages/ecosystem/InitialDexOfferingPage';
+import TransferSupportPage from './pages/ecosystem/TransferSupportPage';
+import NameServicePage from './pages/ecosystem/NameServicePage';
+import InteroperabilityPage from './pages/ecosystem/InteroperabilityPage';
+
+// DApp
+import DAppPage from './pages/DAppPage';
+
+// NEW: Features page
+import FeaturesPage from './pages/FeaturesPage';
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<HomePage />} />
+
+        {/* General pages */}
+        <Route path="about" element={<AboutPage />} />
+        <Route path="explorer" element={<ExplorerPage />} />
+        <Route path="vision" element={<VisionPage />} />
+        <Route path="features" element={<FeaturesPage />} />
+        <Route path="architecture" element={<ArchitecturePage />} />
+        <Route path="tokenomics" element={<TokenomicsPage />} />
+        <Route path="governance" element={<GovernancePage />} />
+        <Route path="roadmap" element={<RoadmapPage />} />
+        <Route path="use-cases" element={<UseCasesPage />} />
+        <Route path="community" element={<CommunityPage />} />
+        <Route path="security" element={<SecurityPage />} />
+        <Route path="get-involved" element={<GetInvolvedPage />} />
+        <Route path="developer" element={<DeveloperPage />} />
+        <Route path="terms-of-use" element={<TermsOfUsePage />} />
+
+        {/* dCorps */}
+        <Route path="corporation" element={<CorporationPage />} />
+        <Route path="public-company" element={<PublicCompanyPage />} />
+        <Route path="non-profit" element={<NonProfitPage />} />
+
+        {/* Blockchain */}
+        <Route path="main-hub" element={<MainHubPage />} />
+        <Route path="sub-hub" element={<SubHubPage />} />
+        <Route path="sub-chain" element={<SubChainPage />} />
+
+        {/* Tokens */}
+        <Route path="dcorp" element={<DcorpPage />} />
+        <Route path="dshares" element={<DsharesPage />} />
+        <Route path="option" element={<OptionPage />} />
+
+        {/* DApp */}
+        <Route path="dapp" element={<DAppPage />} />
+
+        {/* Suites */}
+        <Route path="crypto-merchant" element={<CryptoMerchantPage />} />
+        <Route path="invoicing-payroll" element={<InvoicingPayrollPage />} />
+        <Route path="hr-system" element={<HrSystemPage />} />
+        <Route path="treasury-management" element={<TreasuryManagementPage />} />
+
+        {/* Ecosystem */}
+        <Route path="dcorps-explorer" element={<DCorpsExplorerPage />} />
+        <Route path="dshares-exchange" element={<DSharesExchangePage />} />
+        <Route path="dcorps-marketplace" element={<DCorpsMarketplacePage />} />
+        <Route path="dshares-initial-offering" element={<DSharesInitialOfferingPage />} />
+        <Route path="initial-dex-offering" element={<InitialDexOfferingPage />} />
+        <Route path="transfer-support" element={<TransferSupportPage />} />
+        <Route path="name-service" element={<NameServicePage />} />
+        <Route path="interoperability" element={<InteroperabilityPage />} />
+      </Route>
+    </Routes>
+  );
+}
+
+export default App;
+
+----- File: ./src/App.test.js -----
+import { render, screen } from '@testing-library/react';
+import App from './App';
+
+test('renders learn react link', () => {
+  render(<App />);
+  const linkElement = screen.getByText(/learn react/i);
+  expect(linkElement).toBeInTheDocument();
+});
+
+----- File: ./src/app.original.js -----
+import React, { useState, useEffect } from 'react';
+import {
+  FaDiscord,
+  FaTelegramPlane,
+  FaGithub,
+  FaGitlab,    
+  FaRegUser,      
+  FaGlobe,
+  FaProjectDiagram,
+  FaUsers,
+  FaEye,
+  FaCogs,
+  FaBriefcase,
+  FaExchangeAlt,
+  FaLeaf,
+  FaLayerGroup,
+  FaLock,
+  FaSyncAlt,
+  FaHandHoldingUsd,
+  FaCoins,
+  FaHandHoldingHeart,
+} from 'react-icons/fa';
+import './App.css';
+import { PiAtomBold } from "react-icons/pi";
+import { GoRocket } from "react-icons/go";
+import { FaHandFist } from "react-icons/fa6";
+import { MdOutlineSavings } from "react-icons/md";
+import { FaRegLightbulb } from "react-icons/fa";
+import { VscLaw } from "react-icons/vsc";
+import Sketch from './sketch';
+
+
+
+function DApp() {
+  // State for active section and active page
+  const [activeSection, setActiveSection] = useState('project');
+  const [activePage, setActivePage] = useState('');
+
+  // Light and Dark Mode
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  useEffect(() => {
+    document.documentElement.className = isDarkMode ? '' : 'light-mode';
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prevMode) => !prevMode);
+  };
+
+  // Get the current year for the footer
+  const currentYear = new Date().getFullYear();
+
+  // Function to toggle section visibility, allowing only one section open at a time
+  const toggleSection = (section) => {
+    setActiveSection((prevSection) => (prevSection === section ? '' : section));
+  };
+
+  // Content for each page (Removed Features from here)
+  const pageContent = {
+    About:
+      'About <strong>dCorps</strong>: Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+
+    Explorer:
+      '<strong>dCorps</strong> Explorer: Explore the network with our comprehensive tools.',
+
+    Vision: `
+      <p>The vision behind this blockchain emerges from a fundamental belief that the way organizations are created, managed, and grown must evolve beyond rigid conventions. Instead of relying on centralized authorities and location bound entities, this perspective imagines a global framework where establishing and operating corporations, non profits, and new organizational models can occur transparently and with minimal friction. In this environment, anyone, regardless of cultural, economic, or geographic barriers, can initiate and nurture a venture while benefiting from automated trust mechanisms and verifiable truth rather than opaque intermediaries.</p>
+      <p>This forward looking viewpoint arises from the understanding that legacy structures, often tethered to restrictive borders and complicated bureaucracies, limit who can participate and how quickly they can adapt. By blending advanced blockchain technology, decentralized finance principles, and a deeply rooted ethos of inclusivity, the platform seeks to remove long standing gatekeepers. This shift translates into simpler governance, more equitable distribution of resources, and a more fluid alignment between stakeholders and the communities they serve.</p>
+      <p>Practical application of this vision means that small groups in remote villages can form cooperatives that enjoy the same level of secure transparency as multinational enterprises. Voting rights and resource allocations operate through smart contracts, ensuring each participant holds influence proportionate to their contributions. This approach mitigates corruption and reduces the potential for manipulation by anchoring every transaction, agreement, and governance rule in publicly verifiable code.</p>
+      <p>As we move toward a more digitally interconnected future defined by <strong>Web3</strong> and beyond, the scope of this vision extends past terrestrial boundaries. Emerging off world markets, orbital research stations, and interplanetary trade networks present opportunities to shape new economies that thrive on the principles of open participation, community consensus, and seamless interoperability. With an infrastructure that replaces cumbersome paperwork and time consuming intermediaries, organizations can move freely through ever expanding economic realms, better prepared to innovate, collaborate, and scale.</p>
+      <p>Ultimately, this vision centers on empowering individuals and communities to build, reimagine, and sustain the organizations that define our global future. The goal is to foster a landscape where ideas can flourish into thriving realities, where market entry is not restricted by borders, and where trust is derived from transparent cryptographic verification. This momentum paves the way for new paradigms of corporate life that are ready to serve the dynamic and inclusive economy of tomorrow.</p>
+    `,
+
+    Architecture:
+      `
+      <p>The architecture of the <strong>dCorps</strong> ecosystem leverages the Cosmos SDK and Tendermint-based consensus (often known as CometBFT) to construct a modular and extensible network of interconnected blockchains. At the highest level resides the main hub, implemented as a Cosmos SDK-based chain, responsible for foundational services such as entity registration, governance parameters, and interchain communication. Surrounding the main hub are optional sub-hubs and a collection of independent sub-chains. Each sub-chain, also built on the Cosmos SDK framework, implements custom logic, modules, and data structures to represent distinct corporate entities and their operational requirements.</p>
+      <hr>
+      <h4>The Main Hub and Sub-Hubs</h4>
+      <p>The main hub chain includes core Cosmos SDK modules (Auth, Bank, Staking, Governance) enhanced by custom modules designed for the <strong>dCorps</strong> environment. These specialized modules manage entity registrations, define minimum capital requirements, and optionally interface with decentralized identity (DiD) solutions. Through on-chain governance, <strong>dCorps</strong> token holders can vote on protocol-level adjustments, such as updating collateral thresholds or integrating new sub-hub capabilities.</p>
+      <p>Sub-hubs, if introduced, can be independent Cosmos SDK-based chains that aggregate certain classes of entities or provide specialized services. For example, a Compliance Sub-Hub could host advanced KYC/AML or data-validation logic for regulated sectors. Beyond compliance, communities and developer teams can create industry-focused sub-hubs that incorporate sector-specific rules, certification standards, or financial analytics. For instance, a healthcare-oriented sub-hub might integrate modules aligned with medical data privacy regulations, while a finance-focused sub-hub could enforce securities trading guidelines and advanced risk assessment algorithms. These sub-hubs connect back to the main hub via Inter-Blockchain Communication (IBC), enabling cross-chain token transfers, shared state verification, and coordinated policy enforcement.</p>
+      <hr>
+      <h4>Entity Creation and Registration</h4>
+      <p>To form a new entity (corporation, non-profit, or otherwise), a registration transaction is submitted to the main hub’s Entity Registry module. This transaction includes hashed documentation, relevant metadata, and the required <strong>dCorps</strong> token deposit. Once approved, the main hub spawns a dedicated sub-chain for that entity. This sub-chain runs its own Cosmos SDK-based modules (such as Auth, Bank, and Governance) and can incorporate custom logic for roles, voting, and treasury operations. Node operators then instantiate and connect the new chain to the network, setting up validators and establishing secure IBC channels as needed.</p>
+      <hr>
+      <h4>On-Chain Data and Role Management</h4>
+      <p>Each sub-chain encodes corporate structures and roles using role-based access control (RBAC) mechanisms. Authorized wallets, identified by cryptographic keys or optionally linked DiDs, are granted specific permissions. For example, the President role might propose governance amendments, while the Secretary handles record management tasks. Updates to bylaws, shareholder registers, or officer appointments occur through governance proposals or direct role-specific transactions, validated by the sub-chain’s consensus and recorded on its immutable ledger.</p>
+      <hr>
+      <h4>dShares, Voting Rights, and Financial Instruments</h4>
+      <p>dShares, implemented as custom token modules on sub-chains, represent equity-like instruments granting voting rights and economic benefits. They integrate seamlessly with the chain’s Bank and Governance modules. Since dShares follow Cosmos token standards, they can move across IBC channels, appear on decentralized exchanges, or be bridged to centralized exchanges, extending their market reach.</p>
+      <p>More complex corporate finance instruments such as dividends, stock options, and warrants are managed by additional modules or smart contracts. These components can schedule distributions, set strike prices, and respond to external events. By interfacing with DeFi protocols accessible through IBC, a sub-chain can incorporate lending, liquidity provisioning, or other financial primitives into its corporate operations.</p>
+      <hr>
+      <h4>Wallets, Identities, and Compliance</h4>
+      <p>Wallets correspond to accounts controlled by private keys, and transaction signatures are validated by the Auth module. To meet regulatory or compliance requirements, entities may integrate DiD solutions at the application layer. Sub-chains or sub-hubs can run Identity modules that link on-chain accounts to off-chain credentials, certifications, or licenses. This approach maintains decentralization and privacy by allowing selective disclosure of verified attributes without embedding a centralized identity system into the chain.</p>
+      <hr>
+      <h4>Financial Operations and DeFi Integration</h4>
+      <p>Treasury management, expenses, and payroll are handled by specialized treasury or accounting modules on the sub-chain. These modules can automate salary disbursements, budget approvals, and dividend payments. Through IBC, sub-chains tap into a wide array of DeFi services, including lending markets, stablecoins, and insurance products hosted on other Cosmos-based chains.</p>
+      <p>Moreover, entities can diversify their holdings across various digital assets, not limited to Cosmos-native tokens. For example, they may hold portions of their treasury in stablecoins such as USDT or DAI, as well as major cryptocurrencies like BTC, ETH, or XRP. When possible, native interoperability solutions integrate these external assets directly into the ecosystem. If direct integration is not feasible, secure bridges or wrapping methods act as fallback options. All such holdings are recorded on-chain as part of the entity’s treasury, contributing to its overall valuation. In the event of a sale, buyers and sellers can negotiate how to handle these treasury assets—transferring them to the new owner, retaining them, or adjusting the sale price accordingly—ensuring flexible and transparent financial arrangements.</p>
+      <hr>
+      <h4>Marketplace, dApps, and Cross-Chain Services</h4>
+      <p>Front-end decentralized applications (dApps) connect to node APIs, allowing users to review governance proposals, submit transactions, or inspect corporate records. Explorers track transaction histories and visualize token distributions, officer hierarchies, and voting outcomes. Marketplaces facilitate the buying and selling of sub-chains, enabling entire corporate entities to be acquired, merged, or dissolved on-chain. Similarly, investors can trade dShares on exchanges integrated with the ecosystem, including external DEXs and centralized platforms.</p>
+      <p>By leveraging IBC, sub-chains connect to a broad universe of Cosmos-based services, DeFi primitives, and specialized compliance tools. This ensures that as each entity evolves—upgrading modules, adding identity checks, or integrating advanced financial instruments—it retains the ability to access new markets, liquidity sources, and service providers without complex reengineering.</p>
+      <hr>
+      <h4>Scalability, Interoperability, and Adaptation</h4>
+      <p>Each chain runs on Tendermint/CometBFT consensus, and governance proposals orchestrate upgrades and parameter changes. Sub-chains can adopt new Cosmos SDK modules, integrate advanced identity verification solutions, or open IBC channels to cutting-edge DeFi protocols. This modularity and adaptability ensure that the architecture can grow and evolve as economic conditions, regulatory landscapes, and technological capabilities change over time.</p>
+      <hr>
+      <h4>In Conclusion</h4>
+      <p>The <strong>dCorps</strong> architecture is a flexible and interoperable framework that leverages the Cosmos SDK’s modular design, Tendermint’s secure consensus, and IBC’s cross-chain connectivity. It unifies corporate governance, operational logic, identity frameworks, and financial integrations into a coherent ecosystem. Each sub-chain tailors its structure to the entity’s unique requirements while still benefiting from a shared trust layer, broad market access, and the limitless composability of the interchain environment.</p>
+      `,
+
+    Tokenomics:
+      `
+      <p>The tokenomics guiding the <strong>dCorps</strong> ecosystem is rooted in a dual-tier framework that balances operational utility, corporate equity representation, and network-wide security. At its core lies the <strong>dCorps</strong> token, a fundamental asset that fuels the network’s infrastructure, incentivizes honest participation, and underpins the entire system’s economic stability. Alongside it are the dShares, sub-chain tokens representing corporate equities, that enrich the ecosystem with diverse forms of value creation and investment opportunities.</p>
+      <hr>
+      <h4>The dCorps Token: The Network’s Economic Backbone</h4>
+      <p>The <strong>dCorps</strong> token is more than just a means of exchange; it is the essential “fuel” that powers all hub-level operations. From registering new sub-chains to conducting on-chain transactions, verifying corporate documents, and executing governance proposals, the <strong>dCorps</strong> token ensures that every critical action within the ecosystem is tied directly to a consistent, utility-based demand. These mandatory token requirements seamlessly channel value into the network, stabilizing token flow and reducing reliance on speculative behavior.</p>
+      <p>Furthermore, each new sub-chain, be it a corporation, non-profit, or other legal entity, is required to deposit a certain amount of <strong>dCorps</strong> tokens as initial capital. This minimum collateral requirement is not merely a licensing fee; it firmly aligns the interests of sub-chains with the integrity of the hub. By having literal “skin in the game,” every participant is incentivized to maintain trustworthy governance, transparent operations, and long-term reliability. Should a sub-chain stray into malicious behavior, the capital at risk ensures swift, equitable consequences, reinforcing an environment where security and accountability are paramount.</p>
+      <hr>
+      <h4>dShares: Equity in a Decentralized Economy</h4>
+      <p>While the <strong>dCorps</strong> token secures the network and facilitates core operations, the sub-chain tokens, dShares, represent a different yet complementary dimension of value. Issued by individual sub-chains, dShares function like equity stakes in a corporation. They grant rights to dividends, corporate governance votes, or other shareholder privileges defined by the entity that issues them. Unlike the <strong>dCorps</strong> token, dShares are not used to pay network fees or secure the hub. Instead, they embody the economic destiny and brand identity of the individual corporate entities, enabling investors to align themselves more closely with specific business models, services, or markets.</p>
+      <p>This dual structure creates a dynamic synergy. While <strong>dCorps</strong> tokens unify and secure the broader ecosystem, dShares tap into the unique value proposition of each sub-chain. A thriving sub-chain, buoyed by profitable ventures and strong governance, can enhance the overall appeal of the ecosystem. As more entities incorporate and issue dShares, the demand for the <strong>dCorps</strong> token intensifies, both for meeting ongoing operational costs and fulfilling the initial capital requirements that bind each sub-chain to the hub’s security framework.</p>
+      <hr>
+      <h4>A Balanced, Adaptive Economic Model</h4>
+      <p>As the ecosystem matures, tokenomic parameters can be recalibrated. Early in the network’s life, inflation-driven rewards might be more pronounced to encourage participation, expand the validator set, and establish a broad base of stakers. Over time, as transaction volumes grow and dShares proliferate, fee-based revenue sourced from <strong>dCorps</strong> tokens will naturally rise. This transition gradually reduces reliance on inflation, stabilizing token supply and consolidating long-term value. Governance proposals, voted on by <strong>dCorps</strong> token holders, enable the community to fine-tune inflation schedules, fee structures, and collateral requirements, keeping the system responsive to evolving market conditions and stakeholder priorities.</p>
+      <p>Meanwhile, dShares, backed by robust corporate governance and potentially linking into traditional markets or regulatory frameworks, can attract diverse investors. As these sub-chains flourish, their engagement with the hub’s services, document notarization, compliance checks, or interchain liquidity, fuels demand for <strong>dCorps</strong> tokens. This interdependency ensures that both <strong>dCorps</strong> token holders and dShare investors share a vested interest in the network’s steady, sustainable growth.</p>
+      <hr>
+      <h4>Integration with the Cosmos Ecosystem</h4>
+      <p>The strength of the <strong>dCorps</strong> tokenomics model is further amplified by its integration with Cosmos’ Inter-Blockchain Communication (IBC) protocols and potential shared security models. Just as <strong>dCorps</strong> tokens anchor security for the hub, they can also enable sub-chains and their dShares to seamlessly interface with other chains and decentralized services across the Cosmos ecosystem. Liquidity can flow freely, allowing dShare investors to explore DeFi, lending, or staking opportunities in broader markets, and encouraging cross-ecosystem collaborations. As more sub-chains interact with external infrastructures, the web of value connected to <strong>dCorps</strong> tokens and dShares grows denser, more resilient, and more useful to all participants.</p>
+      <hr>
+      <h4>In Essence</h4>
+      <p>This tokenomic framework weaves together two distinct forms of value, operationally critical <strong>dCorps</strong> tokens and equity-like dShares, into a cohesive economic tapestry. <strong>dCorps</strong> tokens ensure that the network remains secure, transparent, and governed by aligned incentives. dShares draw investors and innovators to specific corporate opportunities, enriching the ecosystem with depth and diversity. In combination, they create a powerful economic engine where each component, every token minted, every sub-chain launched, every corporate action taken, reinforces the security, prosperity, and interconnectedness of <strong>dCorps</strong>, its participants, and the expanding Cosmos universe.</p>
+    `,
+
+    Governance:
+      `
+      <p>Governance within the <strong>dCorps</strong> ecosystem is participatory, adaptive, and closely tied to the evolving stages of the project’s development. From the initial conceptual blueprint, through early token offerings, the launch of the main hub, the establishment of a private corporate entity, and eventually the transformation of that entity into a decentralized publicly traded company, the governance framework ensures that all stakeholders have a meaningful role in shaping the network’s direction.</p>
+      <hr>
+      <h4>Centralized Beginnings</h4>
+      <p>In the earliest phase, when the project exists only as an idea and a rough blueprint, governance is naturally centralized. A small team of visionaries defines the foundational principles, explores technological frameworks, and outlines preliminary objectives. Although these decisions are made by a select few, it is understood that as the project matures and more participants become involved, governance responsibilities will be distributed more widely.</p>
+      <hr>
+      <h4>Introducing dCorp Tokens and Early Participation</h4>
+      <p>As the project advances and a pre-sale or initial coin offering takes place, a limited number of dCorp tokens may be introduced. These tokens represent the technological and infrastructural backbone of the ecosystem. Early token holders, intrigued by the project’s technical vision, can now contribute their insights. They participate in discussions and vote on proposals related to network security, validator sets, interoperability features, and upgrades that enhance performance or add new functionalities. This gradual inclusion of token holders fosters a more decentralized decision-making process focused on ensuring that the network’s technical underpinnings remain robust, efficient, and forward-looking.</p>
+      <hr>
+      <h4>The Hub Launch and Private Corporate Governance</h4>
+      <p>When the hub is launched in a production setting, the ecosystem enters a pivotal stage. At this point, <strong>dCorps</strong> registers as a private corporation. Ownership and some decision-making authority shift to this corporate entity. While dCorp token holders continue to influence and vote on technical matters related to the hub, the corporate entity takes charge of its own strategic, operational, and business-related decisions. This corporate governance encompasses aspects like strategic initiatives, internal resource allocation, and operational adjustments. During this private corporate stage, the distinction between technological and business governance becomes clearer: dCorp token holders concentrate on network-level technical policies, while the private corporation directs the entity’s growth and positioning.</p>
+      <hr>
+      <h4>Growing Adoption and Market Reach</h4>
+      <p>As the project garners more attention and conducts additional private sales, it begins to build trust, attract new stakeholders, and establish a reputation. Eventually, a public ICO and listings on decentralized and centralized exchanges expand the network’s reach. With a larger community of participants, the technological decisions made by dCorp token holders gain depth and diversity. More validators and stakers bring new perspectives on network upgrades, software module integrations, and compatibility with other Cosmos-based chains. In parallel, the private corporation refines its internal processes and prepares for a broader, more public role.</p>
+      <hr>
+      <h4>Transitioning to a Decentralized Public Company</h4>
+      <p>In time, <strong>dCorps</strong> reaches a level of maturity and popularity that supports its evolution into a fully decentralized public company. At this stage, the corporation issues dShares, representing actual equity ownership in the business side of the project. By acquiring dShares, investors and stakeholders who believe in the strategic and commercial potential of <strong>dCorps</strong> gain influence over corporate leadership, growth initiatives, and economic policies. Meanwhile, dCorp token holders continue to guide the hub’s technological direction, maintaining the security, scalability, and interoperability that make the ecosystem appealing.</p>
+      <hr>
+      <h4>A Two-Layered Governance Model</h4>
+      <p>This two-layered governance model fosters balance and specialization. Individuals focused on the technical heart of the ecosystem engage with dCorp tokens, driving protocol-level decisions and safeguarding network integrity. Those more inclined toward business and economic aspects participate as dShares holders, helping steer corporate strategies and resource management. Each group concentrates on areas where their interests and expertise align most closely, ensuring that crucial decisions are made by those best equipped to understand their implications.</p>
+      <hr>
+      <h4>Maturing Governance and Continuous Improvement</h4>
+      <p>As <strong>dCorps</strong> reaches full maturity, governance practices grow more sophisticated and well-established. Identity solutions may offer deeper insights, enabling more informed voting and constructive debates. Sub-chains and corporate entities share successful governance experiments, while proposals continually refine operational and technological parameters. Over time, the ecosystem becomes adept at accommodating new market conditions, adopting technological breakthroughs, and responding to evolving community priorities.</p>
+      <hr>
+      <h4>An Ever-Evolving Governance Framework</h4>
+      <p>Ultimately, the governance of <strong>dCorps</strong> adapts at every step, starting from a centralized blueprint drafting process, evolving through token-based technical involvement, moving into a private corporate structure, and finally offering dShares to create a decentralized, publicly traded company. At each phase, authority shifts, responsibilities broaden, and the community gains greater influence. This dynamic arrangement ensures that the project remains transparent, accountable, and resilient, evolving seamlessly from concept to a thriving ecosystem where every participant can contribute to its sustainable growth and long-term success.</p>
+      `,
+
+    Roadmap:
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    'Use-Cases':
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    Community:
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    Security:
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    'Get Involved':
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    'Corporation':
+      `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    'Public Company':
+      `Public Company: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    'Non-Profit':
+      `Non-Profit: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+
+    'Main Hub':
+      `Main Hub: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Sub-Hub':
+      `Sub-Chain: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Sub-Chain':
+      `Sub-Chain: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    dCorp:
+      `dCorp Token: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    dShares:
+      `dShares Token: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    Option:
+      `Option Token: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    DApp:
+      `DApp: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'dShares Exchange':
+      `dShares Exchange: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    '<strong>dCorps</strong> Marketplace':
+      `<strong>dCorps</strong> Marketplace: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'dShares Initial Offering':
+      `dShares Initial Offering: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Initial DEX Offering':
+      `Initial DEX Offering: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Crypto Merchant':
+      `Crypto Merchant: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Invoicing & Payroll':
+      `Invoicing & Payroll: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'RH System':
+      `RH System: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Treasury Management':
+      `Treasury Management: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    '<strong>dCorps</strong> Explorer':
+      `dCorps Explorer: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Transfer Support':
+      `Transfer Support: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Name Service':
+      `Name Service: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    Interoperability:
+      `Interoperability: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    Ecosystem:
+      `Ecosystem: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    Developer:
+      `Developer Resources: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+    'Terms of Use':
+      `Terms of Use: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  };
+
+  // JSX for the Features page with updated icons
+  const FeaturesContent = (
+    <div className="features-container">
+      <div className="feature-card">
+        <div className="icon-container"><GoRocket className="feature-icon" /></div>
+        <h3 className="feature-title">Interplanetary Economy</h3>
+        <p className="feature-text">
+          Lay the groundwork for commerce beyond Earth, ensuring that off-planet colonies 
+          can establish, trade, and grow corporations without terrestrial constraints.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaGlobe className="feature-icon" /></div>
+        <h3 className="feature-title">Global Accessibility</h3>
+        <p className="feature-text">
+          Empower entrepreneurs, visionaries, and creators from any region to form and manage 
+          corporations, no matter their geographic or economic starting point.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaProjectDiagram className="feature-icon" /></div>
+        <h3 className="feature-title">Decentralized Governance</h3>
+        <p className="feature-text">
+          Distribute decision-making power among diverse stakeholders, preventing centralized 
+          authorities from dictating policy and ensuring true community leadership.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaHandFist className="feature-icon" /></div>
+        <h3 className="feature-title">Censorship Resistance</h3>
+        <p className="feature-text">
+          Use blockchain’s immutable ledger to protect against interference or manipulation, 
+          preserving corporate autonomy and safeguarding investor rights.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaUsers className="feature-icon" /></div>
+        <h3 className="feature-title">Universal Participation</h3>
+        <p className="feature-text">
+          Offer everyone—from small investors to large institutions—direct access to equity 
+          ownership, enabling broad-based wealth creation and collaboration.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaEye className="feature-icon" /></div>
+        <h3 className="feature-title">Transparent Operations</h3>
+        <p className="feature-text">
+          Leverage on-chain records to provide full disclosure of corporate activities, 
+          finances, and decisions, promoting honesty and building trust with stakeholders.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><PiAtomBold className="feature-icon" /></div>
+        <h3 className="feature-title">Crypto-First Finances</h3>
+        <p className="feature-text">
+          Embrace a currency-agnostic model where all transactions occur in digital assets, 
+          eliminating reliance on traditional banking and increasing financial freedom.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><MdOutlineSavings className="feature-icon" /></div>
+        <h3 className="feature-title">Cost-Efficient Framework</h3>
+        <p className="feature-text">
+          Streamline corporate processes to reduce fees and overhead, making enterprise 
+          formation and growth more affordable and equitable.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaCogs className="feature-icon" /></div>
+        <h3 className="feature-title">Automated Governance Tools</h3>
+        <p className="feature-text">
+          Introduce smart contracts and algorithmic decision-making to enhance reliability, 
+          reduce human error, and enable self-executing corporate policies.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaBriefcase className="feature-icon" /></div>
+        <h3 className="feature-title">Comprehensive Corporate Suites</h3>
+        <p className="feature-text">
+          Provide integrated tools—such as invoicing, payroll, and treasury management—all 
+          within a single, user-friendly digital environment.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><VscLaw className="feature-icon" /></div>
+        <h3 className="feature-title">Flexible Legal Structures</h3>
+        <p className="feature-text">
+          Allow corporations to customize governance models, share classes, and voting rights, 
+          ensuring that diverse organizational philosophies can flourish.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaExchangeAlt className="feature-icon" /></div>
+        <h3 className="feature-title">Interoperable Ecosystem</h3>
+        <p className="feature-text">
+          Connect seamlessly with other blockchains and DeFi platforms, broadening financial 
+          opportunities, encouraging innovation, and fostering open collaboration.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaLeaf className="feature-icon" /></div>
+        <h3 className="feature-title">Sustainable Development</h3>
+        <p className="feature-text">
+          Incentivize long-term planning and responsible growth, aligning corporate incentives 
+          with global well-being, environmental stewardship, and social progress.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaLayerGroup className="feature-icon" /></div>
+        <h3 className="feature-title">Scalable Foundations</h3>
+        <p className="feature-text">
+          Build on Cosmos for high throughput, low latency, and modular upgrades, ensuring 
+          that networks scale smoothly as usage intensifies.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaLock className="feature-icon" /></div>
+        <h3 className="feature-title">Security and Reliability</h3>
+        <p className="feature-text">
+          Harness Tendermint/CometBFT consensus and robust validator sets to protect corporate 
+          assets from hacks, fraud, or unauthorized access.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaSyncAlt className="feature-icon" /></div>
+        <h3 className="feature-title">Future-Proof Adaptability</h3>
+        <p className="feature-text">
+          Implement governance mechanisms that can evolve over time, adopting new technologies, 
+          methods, and policies as conditions change.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaRegUser className="feature-icon" /></div>
+        <h3 className="feature-title">Privacy Controls</h3>
+        <p className="feature-text">
+          Let organizations choose what information to disclose or conceal, balancing 
+          transparency with the confidentiality needed for strategic advantage.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaHandHoldingUsd className="feature-icon" /></div>
+        <h3 className="feature-title">Democratized Capital Raising</h3>
+        <p className="feature-text">
+          Facilitate diverse fundraising methods—private sales, public offerings, and 
+          innovative token models—to support a wide spectrum of entrepreneurial ventures.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaCoins className="feature-icon" /></div>
+        <h3 className="feature-title">DeFi Integration</h3>
+        <p className="feature-text">
+          Tap into decentralized lending, staking, and yield generation for treasury management, 
+          boosting corporate liquidity and expanding strategic financial options.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaHandHoldingHeart className="feature-icon" /></div>
+        <h3 className="feature-title">Community-Centric Markets</h3>
+        <p className="feature-text">
+          Foster marketplaces where investors, customers, and supporters converge, 
+          aligning corporate success with genuine public interest and shared values.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaRegLightbulb className="feature-icon" /></div>
+        <h3 className="feature-title">Visionary Entrepreneurship</h3>
+        <p className="feature-text">
+          Inspire a new era of founders who, unencumbered by borders and gatekeepers, 
+          can bring ambitious ideas to life, shaping a fairer, more inclusive global economy.
+        </p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="app-container">
+      {/* Sidebar with Logo, Slogan, and Organized Menu */}
+      <aside className="sidebar">
+        <a href="/" className="logo-link">
+          <div className="logo-container">
+            <img
+              src={isDarkMode ? '/dcorps-logo-white.png' : '/dcorps-logo-black.png'}
+              alt="dCorps Icon"
+              className="logo-icon"
+            />
+            <h1 className="logo-text">dCorps</h1>
+          </div>
+        </a>
+        <div className="under-development">UNDER DEVELOPMENT</div>
+
+        {/* Project Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => toggleSection('project')}
+          >
+            Project
+          </div>
+          <ul
+            className={`menu-items ${
+              activeSection === 'project' ? 'open' : ''
+            }`}
+          >
+            {[
+              'Vision',
+              'Features',
+              'Architecture',
+              'Tokenomics',
+              'Governance',
+              'Roadmap',
+              'Use-Cases',
+              'Community',
+              'Security',
+              'Get Involved',
+            ].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    setActivePage(item);
+                  }}
+                  className={activePage === item ? 'active' : ''}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* dCorps Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => toggleSection('dcorps')}
+          >
+            dCorps
+          </div>
+          <ul
+            className={`menu-items ${
+              activeSection === 'dcorps' ? 'open' : ''
+            }`}
+          >
+            {[
+              'Corporation',
+              'Public Company',
+              'Non-Profit',
+            ].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    setActivePage(item);
+                  }}
+                  className={activePage === item ? 'active' : ''}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Blockchain Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => toggleSection('blockchain')}
+          >
+            Blockchain
+          </div>
+          <ul
+            className={`menu-items ${
+              activeSection === 'blockchain' ? 'open' : ''
+            }`}
+          >
+            {['Main Hub', 'Sub-Hub', 'Sub-Chain'].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    setActivePage(item);
+                  }}
+                  className={activePage === item ? 'active' : ''}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Tokens Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => toggleSection('tokens')}
+          >
+            Tokens
+          </div>
+          <ul
+            className={`menu-items ${
+              activeSection === 'tokens' ? 'open' : ''
+            }`}
+          >
+            {['dCorp', 'dShares', 'Option'].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    setActivePage(item);
+                  }}
+                  className={activePage === item ? 'active' : ''}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* App Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => {
+              setActivePage('DApp');
+            }}
+          >
+            DApp
+          </div>
+        </div>
+
+        {/* Suites Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => toggleSection('suites')}
+          >
+            Suites
+          </div>
+          <ul
+            className={`menu-items ${
+              activeSection === 'suites' ? 'open' : ''
+            }`}
+          >
+            {[
+              'Crypto Merchant',
+              'Invoicing & Payroll',
+              'HR System',
+              'Treasury Management',
+            ].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    setActivePage(item);
+                  }}
+                  className={activePage === item ? 'active' : ''}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Ecosystem Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => toggleSection('ecosystem')}
+          >
+            Ecosystem
+          </div>
+          <ul
+            className={`menu-items ${
+              activeSection === 'ecosystem' ? 'open' : ''
+            }`}
+          >
+            {[
+              'dCorps Explorer',
+              'dShares Exchange',
+              'dCorps Marketplace',
+              'dShares Initial Offering',
+              'Initial DEX Offering',
+              'Transfer Support',
+              'Name Service',
+              'Interoperability',
+            ].map((item) => (
+              <li key={item}>
+                <a
+                  href="#"
+                  onClick={() => {
+                    setActivePage(item);
+                  }}
+                  className={activePage === item ? 'active' : ''}
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Developer Section */}
+        <div className="menu-section">
+          <div
+            className="menu-title"
+            onClick={() => {
+              setActivePage('Developer');
+            }}
+          >
+            Developer
+          </div>
+        </div>
+      </aside>
+
+      <div className="content-area">
+        {/* Fixed Top Bar over Main Content */}
+        <header className="top-bar">
+          {/* Column 1: Menu */}
+          <div className="top-bar-col menu-col">
+            <nav className="menu">
+              <a href="#" onClick={() => setActivePage('')}>
+                Home
+              </a>
+              <a href="#" onClick={() => setActivePage('About')}>
+                About
+              </a>
+              <a href="#" onClick={() => setActivePage('Explorer')}>
+                Explorer
+              </a>
+            </nav>
+          </div>
+
+          {/* Column 2: Cosmos Mention */}
+          <div className="top-bar-col cosmos-col">
+            <p className="cosmos-sdk-text">
+              Developed on C&oslash;smos
+              <img
+                src={isDarkMode ? "/cosmos-white.png" : "/cosmos-black.png"}
+                alt="Cosmos SDK Logo"
+                className="cosmos-logo"
+              />
+            </p>
+          </div>
+
+          {/* Column 3: Social Icons */}
+          <div className="top-bar-col social-col">
+            <div className="social-icons">
+              <a href="https://x.com/dcorps_hub" target="_blank" rel="noopener noreferrer">
+                <img
+                  src={isDarkMode ? "/x-white.png" : "/x-black.png"}
+                  alt="X Logo"
+                  className="social-logo"
+                />
+              </a>
+              <a
+                href="https://discord.com/yourserver"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaDiscord />
+              </a>
+              <a
+                href="https://t.me/yourchannel"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaTelegramPlane />
+              </a>
+              <a
+                href="https://github.com/dcorps-hub"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaGithub />
+              </a>
+              <a
+                href="https://gitlab.com/yourrepo"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaGitlab />
+              </a>
+            </div>
+          </div>
+
+          {/* Column 4: Light and Dark Toggle Switch */}
+          <div className="top-bar-col theme-col">
+            <div className="theme-toggle">
+              <label htmlFor="theme-toggle-switch">
+                {isDarkMode ? 'Dark' : 'Light'}
+              </label>
+              <input
+                id="theme-toggle-switch"
+                type="checkbox"
+                checked={!isDarkMode}
+                onChange={toggleTheme}
+              />
+            </div>
+          </div>
+
+          {/* Column 5: Open App Button */}
+          <div className="top-bar-col button-col">
+            <button className="open-app">Open DApp</button>
+          </div>
+        </header>
+
+        {/* Main Content */}
+        <main className="main-content">
+          <div className="content-header">
+            <h1 className="main-title">{activePage || 'Interplanetary Economy...'}</h1>
+            {activePage && activePage !== 'Home' && (
+              <div className="breadcrumb">
+                <a href="#" onClick={() => setActivePage('')}>
+                  Home
+                </a>{' '}
+                / {activePage}
+              </div>
+            )}
+          </div>
+          <div className="content-wrapper">
+            {activePage === 'Features' ? (
+              // Show the FeaturesContent if activePage is 'Features'
+              FeaturesContent
+            ) : !activePage ? (
+              // Homepage (no activePage): Show original text + 2 sections
+              <div className="page-text">
+                <div
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      pageContent[activePage] ||
+                      '<p>Well, not for now, but this hub project will trace a path toward outer space as we remove border complexities and build on Web3. Let me explain: <strong>dCorps</strong> <i>(Decentralized Corporations)</i> is a next-generation blockchain infrastructure that enables anyone, anywhere to create and manage corporations or nonprofits with total transparency. The first step is not to sell on Mars, but rather to empower people on Earth to register and run their businesses with a high level of openness, regardless of who they are, where they live, or what they believe. By blending blockchain transparency (often reducing the need for traditional regulations), integrating decentralized finance, and remaining purely digital (even when conducting physical trade), dCorps breaks down barriers, making it a perfectly suited innovative solution for an increasingly globalized digital economy. This pioneering project not only serves today’s generation but also paves the way for an <strong>interplanetary economy</strong>, shaping the future of business in a decentralized world.</p>'
+                    ,
+                  }}
+                ></div>
+
+                {/* First Additional Section */}
+                <hr />
+                <h4 className="section-one-title">Section One Title</h4>
+                <p className="section-one-text">
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod velit quis sapien commodo, vel hendrerit libero aliquet. Morbi feugiat congue lectus, et pellentesque nulla molestie vel.
+                </p>
+
+                <div className="section-one-cards-container" style={{ marginTop: '20px' }}>
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 1</h5>
+                    <p className="section-one-card-text">
+                      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis sapien a augue volutpat aliquam.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 2</h5>
+                    <p className="section-one-card-text">
+                      Etiam tincidunt mi in dui pretium, id ultrices massa aliquet.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 3</h5>
+                    <p className="section-one-card-text">
+                      Fusce commodo orci et felis imperdiet, a ullamcorper magna imperdiet.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 4</h5>
+                    <p className="section-one-card-text">
+                      Curabitur eget diam ac erat suscipit efficitur in et nisi.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 5</h5>
+                    <p className="section-one-card-text">
+                      Suspendisse potenti. Morbi convallis purus purus, quis lobortis arcu imperdiet at.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 6</h5>
+                    <p className="section-one-card-text">
+                      Donec vitae tellus vitae justo dignissim congue quis ac risus.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 7</h5>
+                    <p className="section-one-card-text">
+                      Quisque pulvinar metus at metus commodo, eget mollis lorem vestibulum.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 8</h5>
+                    <p className="section-one-card-text">
+                      Pellentesque fermentum, massa vitae vulputate accumsan, ex libero cursus enim, a convallis nisi augue at nulla.
+                    </p>
+                  </div>
+
+                  <div className="section-one-card">
+                    <h5 className="section-one-card-title">Card Title 9</h5>
+                    <p className="section-one-card-text">
+                      Sed luctus magna in mauris auctor, sed luctus enim scelerisque.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Second Additional Section */}
+                <hr />
+                <h4>Section Two Title</h4>
+                <p>
+                  Quisque tristique suscipit elit, in dapibus erat facilisis a. Phasellus feugiat ex non arcu sodales, ac varius odio mollis. Praesent sed lorem a nunc finibus vestibulum.
+                </p>
+                <img
+                  src="/sketch.png"
+                  alt="Sketch - Section Two"
+                  style={{ marginTop: '20px', maxWidth: '100%' }}
+                />
+              </div>
+            ) : (
+              // Any other page: Show its pageContent
+              <div
+                className="page-text"
+                dangerouslySetInnerHTML={{
+                  __html: pageContent[activePage],
+                }}
+              ></div>
+            )}
+          </div>
+        </main>
+
+
+
+
+
+        {/* Footer */}
+        <footer className="footer">
+          <div className="footer-left">
+            <p>&copy; {currentYear} - dCorps.com</p>
+          </div>
+          <div className="footer-right">
+            <a
+              href="#"
+              onClick={() => setActivePage('Terms of Use')}
+            >
+              Terms of Use
+            </a>
+            <a
+              href="#dcorps"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              dCorps #A0000001
+            </a>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+export default DApp;
+----- File: ./src/components/FeaturesContent.js -----
+import React from 'react';
+import { GoRocket } from "react-icons/go";
+import {
+  FaGlobe,
+  FaProjectDiagram,
+  FaUsers,
+  FaEye,
+  FaCogs,
+  FaBriefcase,
+  FaExchangeAlt,
+  FaLeaf,
+  FaLayerGroup,
+  FaLock,
+  FaSyncAlt,
+  FaRegUser,
+  FaHandHoldingUsd,
+  FaCoins,
+  FaHandHoldingHeart,
+} from 'react-icons/fa';
+import { PiAtomBold } from "react-icons/pi";
+import { FaHandFist } from "react-icons/fa6";
+import { MdOutlineSavings } from "react-icons/md";
+import { FaRegLightbulb } from "react-icons/fa";
+import { VscLaw } from "react-icons/vsc";
+
+function FeaturesContent() {
+  return (
+    <div className="features-container">
+      <div className="feature-card">
+        <div className="icon-container"><GoRocket className="feature-icon" /></div>
+        <h3 className="feature-title">Interplanetary Economy</h3>
+        <p className="feature-text">
+          Lay the groundwork for commerce beyond Earth, ensuring that off-planet colonies
+          can establish, trade, and grow corporations without terrestrial constraints.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaGlobe className="feature-icon" /></div>
+        <h3 className="feature-title">Global Accessibility</h3>
+        <p className="feature-text">
+          Empower entrepreneurs, visionaries, and creators from any region to form and manage
+          corporations, no matter their geographic or economic starting point.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaProjectDiagram className="feature-icon" /></div>
+        <h3 className="feature-title">Decentralized Governance</h3>
+        <p className="feature-text">
+          Distribute decision-making power among diverse stakeholders, preventing centralized
+          authorities from dictating policy and ensuring true community leadership.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaHandFist className="feature-icon" /></div>
+        <h3 className="feature-title">Censorship Resistance</h3>
+        <p className="feature-text">
+          Use blockchain’s immutable ledger to protect against interference or manipulation,
+          preserving corporate autonomy and safeguarding investor rights.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaUsers className="feature-icon" /></div>
+        <h3 className="feature-title">Universal Participation</h3>
+        <p className="feature-text">
+          Offer everyone—from small investors to large institutions—direct access to equity
+          ownership, enabling broad-based wealth creation and collaboration.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaEye className="feature-icon" /></div>
+        <h3 className="feature-title">Transparent Operations</h3>
+        <p className="feature-text">
+          Leverage on-chain records to provide full disclosure of corporate activities,
+          finances, and decisions, promoting honesty and building trust with stakeholders.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><PiAtomBold className="feature-icon" /></div>
+        <h3 className="feature-title">Crypto-First Finances</h3>
+        <p className="feature-text">
+          Embrace a currency-agnostic model where all transactions occur in digital assets,
+          eliminating reliance on traditional banking and increasing financial freedom.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><MdOutlineSavings className="feature-icon" /></div>
+        <h3 className="feature-title">Cost-Efficient Framework</h3>
+        <p className="feature-text">
+          Streamline corporate processes to reduce fees and overhead, making enterprise
+          formation and growth more affordable and equitable.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaCogs className="feature-icon" /></div>
+        <h3 className="feature-title">Automated Governance Tools</h3>
+        <p className="feature-text">
+          Introduce smart contracts and algorithmic decision-making to enhance reliability,
+          reduce human error, and enable self-executing corporate policies.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaBriefcase className="feature-icon" /></div>
+        <h3 className="feature-title">Comprehensive Corporate Suites</h3>
+        <p className="feature-text">
+          Provide integrated tools—such as invoicing, payroll, and treasury management—all
+          within a single, user-friendly digital environment.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><VscLaw className="feature-icon" /></div>
+        <h3 className="feature-title">Flexible Legal Structures</h3>
+        <p className="feature-text">
+          Allow corporations to customize governance models, share classes, and voting rights,
+          ensuring that diverse organizational philosophies can flourish.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaExchangeAlt className="feature-icon" /></div>
+        <h3 className="feature-title">Interoperable Ecosystem</h3>
+        <p className="feature-text">
+          Connect seamlessly with other blockchains and DeFi platforms, broadening financial
+          opportunities, encouraging innovation, and fostering open collaboration.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaLeaf className="feature-icon" /></div>
+        <h3 className="feature-title">Sustainable Development</h3>
+        <p className="feature-text">
+          Incentivize long-term planning and responsible growth, aligning corporate incentives
+          with global well-being, environmental stewardship, and social progress.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaLayerGroup className="feature-icon" /></div>
+        <h3 className="feature-title">Scalable Foundations</h3>
+        <p className="feature-text">
+          Build on Cosmos for high throughput, low latency, and modular upgrades, ensuring
+          that networks scale smoothly as usage intensifies.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaLock className="feature-icon" /></div>
+        <h3 className="feature-title">Security and Reliability</h3>
+        <p className="feature-text">
+          Harness Tendermint/CometBFT consensus and robust validator sets to protect corporate
+          assets from hacks, fraud, or unauthorized access.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaSyncAlt className="feature-icon" /></div>
+        <h3 className="feature-title">Future-Proof Adaptability</h3>
+        <p className="feature-text">
+          Implement governance mechanisms that can evolve over time, adopting new technologies,
+          methods, and policies as conditions change.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaRegUser className="feature-icon" /></div>
+        <h3 className="feature-title">Privacy Controls</h3>
+        <p className="feature-text">
+          Let organizations choose what information to disclose or conceal, balancing
+          transparency with the confidentiality needed for strategic advantage.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaHandHoldingUsd className="feature-icon" /></div>
+        <h3 className="feature-title">Democratized Capital Raising</h3>
+        <p className="feature-text">
+          Facilitate diverse fundraising methods—private sales, public offerings, and
+          innovative token models—to support a wide spectrum of entrepreneurial ventures.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaCoins className="feature-icon" /></div>
+        <h3 className="feature-title">DeFi Integration</h3>
+        <p className="feature-text">
+          Tap into decentralized lending, staking, and yield generation for treasury management,
+          boosting corporate liquidity and expanding strategic financial options.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaHandHoldingHeart className="feature-icon" /></div>
+        <h3 className="feature-title">Community-Centric Markets</h3>
+        <p className="feature-text">
+          Foster marketplaces where investors, customers, and supporters converge,
+          aligning corporate success with genuine public interest and shared values.
+        </p>
+      </div>
+
+      <div className="feature-card">
+        <div className="icon-container"><FaRegLightbulb className="feature-icon" /></div>
+        <h3 className="feature-title">Visionary Entrepreneurship</h3>
+        <p className="feature-text">
+          Inspire a new era of founders who, unencumbered by borders and gatekeepers,
+          can bring ambitious ideas to life, shaping a fairer, more inclusive global economy.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default FeaturesContent;
+
+----- File: ./src/index.css -----
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+----- File: ./src/index.js -----
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
+import App from './App';
+import './App.css'; // main CSS
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>
+);
+
+----- File: ./src/layouts/Footer.js -----
+import React from 'react';
+import { Link } from 'react-router-dom';
+
+function Footer() {
+  const currentYear = new Date().getFullYear();
+
+  return (
+    <footer className="footer">
+      <div className="footer-left">
+        <p>&copy; {currentYear} - dCorps.com</p>
+      </div>
+      <div className="footer-right">
+        <Link to="/terms-of-use">Terms of Use</Link>
+        <a
+          href="#dcorps"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          dCorps #A0000001
+        </a>
+      </div>
+    </footer>
+  );
+}
+
+export default Footer;
+
+----- File: ./src/layouts/Layout.js -----
+// src/layouts/Layout.js
+import React, { useState, useEffect } from 'react';
+import { Outlet } from 'react-router-dom';
+import Sidebar from './Sidebar';
+import TopBar from './TopBar';
+import Footer from './Footer';
+import RoadmapList from './RoadmapList';
+
+function Layout() {
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  // Add this local state for toggling the Roadmap’s open/collapsed
+  const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    document.documentElement.className = isDarkMode ? '' : 'light-mode';
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => !prev);
+  };
+
+  return (
+    <div className="app-container">
+      <Sidebar isDarkMode={isDarkMode} />
+
+      <div className="content-area">
+        <TopBar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+
+        <div className="content-body">
+          {/* Toggle classes on <main> using isOpen */}
+          <main className={`main-content ${isOpen ? 'open' : 'collapsed'}`}>
+            <Outlet />
+          </main>
+
+          {/* Pass isOpen and setIsOpen down to RoadmapList */}
+          <RoadmapList isOpen={isOpen} setIsOpen={setIsOpen} />
+        </div>
+
+        <Footer />
+      </div>
+    </div>
+  );
+}
+
+export default Layout;
+
+----- File: ./src/layouts/RoadmapList.js -----
+// src/layouts/RoadmapList.js
+import React from 'react';
+
+const roadmapData = [
+  {
+    subtitle: 'Q1 2025',
+    tasks: [
+      { text: 'Create the Main Hub', done: true },
+      { text: 'Create the Sub Hub', done: true },
+    ],
+  },
+  {
+    subtitle: 'Q2 2025',
+    tasks: [
+      { text: 'Initialize Token Distribution', done: false },
+      { text: 'Launch Public Testnet', done: false },
+    ],
+  },
+  {
+    subtitle: 'Q3 2025',
+    tasks: [
+      { text: 'Open Public Sale', done: false },
+      { text: 'Establish Governance Framework', done: false },
+    ],
+  },
+];
+
+const tokenTasks = [
+  { text: 'Seed Round', done: false },
+  { text: 'Private Sale', done: false },
+  { text: 'Public Sale', done: false },
+];
+
+function truncateTask(task, limit = 20) {
+  if (task.length > limit) {
+    return task.substring(0, limit) + '...';
+  }
+  return task;
+}
+
+function RoadmapList({ isOpen, setIsOpen }) {
+  const arrow = isOpen ? '›' : '‹';
+
+  return (
+    <div className={`right-sidebar-wrapper ${isOpen ? 'open' : 'collapsed'}`}>
+      <div
+        className="right-sidebar-handle"
+        onClick={() => setIsOpen(!isOpen)}
+        title="Toggle Roadmap"
+      >
+        {arrow}
+      </div>
+
+      <aside className="right-sidebar">
+        <h4 className="roadmap-title">Roadmap</h4>
+        {roadmapData.map((group, groupIndex) => (
+          <React.Fragment key={groupIndex}>
+            <h5 className="roadmap-subtitle">{group.subtitle}</h5>
+            <ul className="roadmap-list">
+              {group.tasks.map((item, itemIndex) => (
+                <li key={itemIndex}>
+                  <span className={`bullet ${item.done ? 'done' : ''}`}></span>
+                  {truncateTask(item.text)}
+                </li>
+              ))}
+            </ul>
+          </React.Fragment>
+        ))}
+
+        <h4 className="token-title">Token Offering</h4>
+        <ul className="roadmap-list">
+          {tokenTasks.map((item, index) => (
+            <li key={index}>
+              <span className={`bullet ${item.done ? 'done' : ''}`}></span>
+              {truncateTask(item.text)}
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  );
+}
+
+export default RoadmapList;
+
+----- File: ./src/layouts/Sidebar.js -----
+import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+
+function Sidebar({ isDarkMode }) {
+  const location = useLocation();
+
+  // Single state for "openSection" to allow only one open at a time
+  const [openSection, setOpenSection] = useState('');
+
+  // Toggle section expansion
+  const toggleSection = (sectionName) => {
+    setOpenSection((prev) => (prev === sectionName ? '' : sectionName));
+  };
+
+  // Check if route is currently active
+  const isActiveRoute = (path) => location.pathname === path;
+
+  return (
+    <aside className="sidebar">
+      {/* Logo and Under-Development Label */}
+      <Link to="/" className="logo-link">
+        <div className="logo-container">
+          <img
+            src={isDarkMode ? '/dcorps-logo-white.png' : '/dcorps-logo-black.png'}
+            alt="dCorps Icon"
+            className="logo-icon"
+          />
+          <h1 className="logo-text">dCorps</h1>
+        </div>
+      </Link>
+      <div className="under-development">sovereign blockchain</div>
+
+      {/* Project */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('project')}>
+          Project
+        </div>
+        <ul className={`menu-items ${openSection === 'project' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/vision"
+              className={isActiveRoute('/vision') ? 'active' : ''}
+            >
+              Vision
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/features"
+              className={isActiveRoute('/features') ? 'active' : ''}
+            >
+              Features
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/architecture"
+              className={isActiveRoute('/architecture') ? 'active' : ''}
+            >
+              Architecture
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/tokenomics"
+              className={isActiveRoute('/tokenomics') ? 'active' : ''}
+            >
+              Tokenomics
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/governance"
+              className={isActiveRoute('/governance') ? 'active' : ''}
+            >
+              Governance
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/roadmap"
+              className={isActiveRoute('/roadmap') ? 'active' : ''}
+            >
+              Roadmap
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/use-cases"
+              className={isActiveRoute('/use-cases') ? 'active' : ''}
+            >
+              Use-Cases
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/community"
+              className={isActiveRoute('/community') ? 'active' : ''}
+            >
+              Community
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/security"
+              className={isActiveRoute('/security') ? 'active' : ''}
+            >
+              Security
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/get-involved"
+              className={isActiveRoute('/get-involved') ? 'active' : ''}
+            >
+              Get Involved
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* dCorps */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('dcorps')}>
+          dCorps
+        </div>
+        <ul className={`menu-items ${openSection === 'dcorps' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/corporation"
+              className={isActiveRoute('/corporation') ? 'active' : ''}
+            >
+              Corporation
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/public-company"
+              className={isActiveRoute('/public-company') ? 'active' : ''}
+            >
+              Public Company
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/non-profit"
+              className={isActiveRoute('/non-profit') ? 'active' : ''}
+            >
+              Non-Profit
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Blockchain */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('blockchain')}>
+          Blockchain
+        </div>
+        <ul className={`menu-items ${openSection === 'blockchain' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/main-hub"
+              className={isActiveRoute('/main-hub') ? 'active' : ''}
+            >
+              Main Hub
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/sub-hub"
+              className={isActiveRoute('/sub-hub') ? 'active' : ''}
+            >
+              Sub-Hub
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/sub-chain"
+              className={isActiveRoute('/sub-chain') ? 'active' : ''}
+            >
+              Sub-Chain
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Tokens */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('tokens')}>
+          Tokens
+        </div>
+        <ul className={`menu-items ${openSection === 'tokens' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/dcorp"
+              className={isActiveRoute('/dcorp') ? 'active' : ''}
+            >
+              dCorp
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dshares"
+              className={isActiveRoute('/dshares') ? 'active' : ''}
+            >
+              dShares
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/option"
+              className={isActiveRoute('/option') ? 'active' : ''}
+            >
+              Option
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* DApp - now toggles like a sub-menu */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('dapp')}>
+          DApp
+        </div>
+        <ul className={`menu-items ${openSection === 'dapp' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/dapp"
+              className={isActiveRoute('/dapp') ? 'active' : ''}
+            >
+              DApp
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Suites */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('suites')}>
+          Suites
+        </div>
+        <ul className={`menu-items ${openSection === 'suites' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/crypto-merchant"
+              className={isActiveRoute('/crypto-merchant') ? 'active' : ''}
+            >
+              Crypto Merchant
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/invoicing-payroll"
+              className={isActiveRoute('/invoicing-payroll') ? 'active' : ''}
+            >
+              Invoicing & Payroll
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/hr-system"
+              className={isActiveRoute('/hr-system') ? 'active' : ''}
+            >
+              HR System
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/treasury-management"
+              className={isActiveRoute('/treasury-management') ? 'active' : ''}
+            >
+              Treasury Management
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Ecosystem */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('ecosystem')}>
+          Ecosystem
+        </div>
+        <ul className={`menu-items ${openSection === 'ecosystem' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/dcorps-explorer"
+              className={isActiveRoute('/dcorps-explorer') ? 'active' : ''}
+            >
+              dCorps Explorer
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dshares-exchange"
+              className={isActiveRoute('/dshares-exchange') ? 'active' : ''}
+            >
+              dShares Exchange
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dcorps-marketplace"
+              className={isActiveRoute('/dcorps-marketplace') ? 'active' : ''}
+            >
+              dCorps Marketplace
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/dshares-initial-offering"
+              className={isActiveRoute('/dshares-initial-offering') ? 'active' : ''}
+            >
+              dShares Initial Offering
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/initial-dex-offering"
+              className={isActiveRoute('/initial-dex-offering') ? 'active' : ''}
+            >
+              Initial DEX Offering
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/transfer-support"
+              className={isActiveRoute('/transfer-support') ? 'active' : ''}
+            >
+              Transfer Support
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/name-service"
+              className={isActiveRoute('/name-service') ? 'active' : ''}
+            >
+              Name Service
+            </Link>
+          </li>
+          <li>
+            <Link
+              to="/interoperability"
+              className={isActiveRoute('/interoperability') ? 'active' : ''}
+            >
+              Interoperability
+            </Link>
+          </li>
+        </ul>
+      </div>
+
+      {/* Developer - now toggles like a sub-menu */}
+      <div className="menu-section">
+        <div className="menu-title" onClick={() => toggleSection('developer')}>
+          Developer
+        </div>
+        <ul className={`menu-items ${openSection === 'developer' ? 'open' : ''}`}>
+          <li>
+            <Link
+              to="/developer"
+              className={isActiveRoute('/developer') ? 'active' : ''}
+            >
+              Developer
+            </Link>
+          </li>
+        </ul>
+      </div>
+    </aside>
+  );
+}
+
+export default Sidebar;
+
+----- File: ./src/layouts/TopBar.js -----
+import React from 'react';
+import { Link } from 'react-router-dom';
+import {
+  FaDiscord,
+  FaTelegramPlane,
+  FaGithub,
+  FaGitlab,
+} from 'react-icons/fa';
+
+function TopBar({ isDarkMode, toggleTheme }) {
+  return (
+    <header className="top-bar">
+      {/* Column 1: Menu */}
+      <div className="top-bar-col menu-col">
+        <nav className="menu">
+          <Link to="/">Home</Link>
+          <Link to="/about">About</Link>
+          <Link to="/explorer">Explorer</Link>
+        </nav>
+      </div>
+
+      {/* Column 2: Cosmos Mention */}
+      <div className="top-bar-col cosmos-col">
+        <p className="cosmos-sdk-text">
+          Developed on C&oslash;smos
+          <img
+            src={isDarkMode ? "/cosmos-white.png" : "/cosmos-black.png"}
+            alt="Cosmos Logo"
+            className="cosmos-logo"
+          />
+        </p>
+      </div>
+
+      {/* Column 3: Social Icons */}
+      <div className="top-bar-col social-col">
+        <div className="social-icons">
+          <a
+            href="https://x.com/dcorps_hub"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={isDarkMode ? "/x-white.png" : "/x-black.png"}
+              alt="X Logo"
+              className="social-logo"
+            />
+          </a>
+          <a
+            href="https://discord.com/yourserver"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaDiscord />
+          </a>
+          <a
+            href="https://t.me/yourchannel"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaTelegramPlane />
+          </a>
+          <a
+            href="https://github.com/dcorps-hub"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaGithub />
+          </a>
+          <a
+            href="https://gitlab.com/yourrepo"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaGitlab />
+          </a>
+        </div>
+      </div>
+
+      {/* Column 4: Light/Dark Toggle */}
+      <div className="top-bar-col theme-col">
+        <div className="theme-toggle">
+          <label htmlFor="theme-toggle-switch">
+            {isDarkMode ? 'Dark' : 'Light'}
+          </label>
+          <input
+            id="theme-toggle-switch"
+            type="checkbox"
+            checked={!isDarkMode}
+            onChange={toggleTheme}
+          />
+        </div>
+      </div>
+
+      {/* Column 5: Open DApp Button */}
+      <div className="top-bar-col button-col">
+        <Link to="/dapp">
+          <button className="open-app">Open DApp</button>
+        </Link>
+      </div>
+    </header>
+  );
+}
+
+export default TopBar;
+
+----- File: ./src/logo.svg (BINARY FILE) -----
+----- File: ./src/pages/AboutPage.js -----
+// src/pages/AboutPage.js
+import React from 'react';
+
+function AboutPage() {
+  const content = `
+    About <strong>dCorps</strong>: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  `;
+
+  return (
+    <div className="page-text">
+      <h1>About</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default AboutPage;
+
+----- File: ./src/pages/ArchitecturePage.js -----
+// src/pages/ArchitecturePage.js
+import React from 'react';
+
+function ArchitecturePage() {
+  const content = `
+      <p>The architecture of the <strong>dCorps</strong> ecosystem leverages the Cosmos SDK ... </p>
+      <hr>
+      <h4>The Main Hub and Sub-Hubs</h4>
+      <p>The main hub chain includes core Cosmos SDK modules (Auth, Bank, Staking, Governance) ... </p>
+      <p>Sub-hubs, if introduced, can be independent Cosmos SDK-based ...</p>
+      <hr>
+      <h4>Entity Creation and Registration</h4>
+      <p>To form a new entity (corporation, non-profit, or otherwise) ...</p>
+      <hr>
+      <h4>On-Chain Data and Role Management</h4>
+      <p>Each sub-chain encodes corporate structures and roles using ...</p>
+      <hr>
+      <h4>dShares, Voting Rights, and Financial Instruments</h4>
+      <p>dShares, implemented as custom token modules on sub-chains ...</p>
+      <hr>
+      <h4>Wallets, Identities, and Compliance</h4>
+      <p>Wallets correspond to accounts controlled by private keys ...</p>
+      <hr>
+      <h4>Financial Operations and DeFi Integration</h4>
+      <p>Treasury management, expenses, and payroll are handled by specialized ...</p>
+      <p>Moreover, entities can diversify their holdings across various digital assets ...</p>
+      <hr>
+      <h4>Marketplace, dApps, and Cross-Chain Services</h4>
+      <p>Front-end decentralized applications (dApps) connect to node APIs ...</p>
+      <p>By leveraging IBC, sub-chains connect to a broad universe ...</p>
+      <hr>
+      <h4>Scalability, Interoperability, and Adaptation</h4>
+      <p>Each chain runs on Tendermint/CometBFT consensus ...</p>
+      <hr>
+      <h4>In Conclusion</h4>
+      <p>The <strong>dCorps</strong> architecture is a flexible and interoperable framework ...</p>
+    `;
+
+  return (
+    <div className="page-text">
+      <h1>Architecture</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default ArchitecturePage;
+
+----- File: ./src/pages/CommunityPage.js -----
+// src/pages/CommunityPage.js
+import React from 'react';
+
+function CommunityPage() {
+  const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Community</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default CommunityPage;
+
+----- File: ./src/pages/DAppPage.js -----
+// src/pages/DAppPage.js
+import React from 'react';
+
+function DAppPage() {
+  const content = `DApp: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>DApp</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DAppPage;
+
+----- File: ./src/pages/DeveloperPage.js -----
+// src/pages/DeveloperPage.js
+import React from 'react';
+
+function DeveloperPage() {
+  const content = `Developer Resources: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Developer</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DeveloperPage;
+
+----- File: ./src/pages/ExplorerPage.js -----
+// src/pages/ExplorerPage.js
+import React from 'react';
+
+function ExplorerPage() {
+  const content = `<strong>dCorps</strong> Explorer: Explore the network with our comprehensive tools.`;
+
+  return (
+    <div className="page-text">
+      <h1>Explorer</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default ExplorerPage;
+
+----- File: ./src/pages/FeaturesPage.js -----
+// src/pages/FeaturesPage.js
+import React from 'react';
+import FeaturesContent from '../components/FeaturesContent';
+
+function FeaturesPage() {
+  return (
+    <div className="page-text">
+      <h1>Features</h1>
+      <hr />
+      <FeaturesContent />
+    </div>
+  );
+}
+
+export default FeaturesPage;
+
+----- File: ./src/pages/GetInvolvedPage.js -----
+// src/pages/GetInvolvedPage.js
+import React from 'react';
+
+function GetInvolvedPage() {
+  const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Get Involved</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default GetInvolvedPage;
+
+----- File: ./src/pages/GovernancePage.js -----
+// src/pages/GovernancePage.js
+import React from 'react';
+
+function GovernancePage() {
+  const content = `
+      <p>Governance within the <strong>dCorps</strong> ecosystem is participatory...</p>
+      <hr>
+      <h4>Centralized Beginnings</h4>
+      <p>In the earliest phase, when the project exists only as an idea...</p>
+      <hr>
+      <h4>Introducing dCorp Tokens and Early Participation</h4>
+      <p>As the project advances and a pre-sale or initial coin offering takes place...</p>
+      <hr>
+      <h4>The Hub Launch and Private Corporate Governance</h4>
+      <p>When the hub is launched in a production setting...</p>
+      <hr>
+      <h4>Growing Adoption and Market Reach</h4>
+      <p>As the project garners more attention and conducts additional private sales...</p>
+      <hr>
+      <h4>Transitioning to a Decentralized Public Company</h4>
+      <p>In time, <strong>dCorps</strong> reaches a level of maturity and popularity...</p>
+      <hr>
+      <h4>A Two-Layered Governance Model</h4>
+      <p>This two-layered governance model fosters balance and specialization...</p>
+      <hr>
+      <h4>Maturing Governance and Continuous Improvement</h4>
+      <p>As <strong>dCorps</strong> reaches full maturity, governance practices grow more sophisticated...</p>
+      <hr>
+      <h4>An Ever-Evolving Governance Framework</h4>
+      <p>Ultimately, the governance of <strong>dCorps</strong> adapts at every step...</p>
+    `;
+
+    return (
+      <div className="page-text">
+        <h1>Governance</h1>
+        <hr />
+        <div dangerouslySetInnerHTML={{ __html: content }} />
+      </div>
+    );
+  }
+
+export default GovernancePage;
+
+----- File: ./src/pages/HomePage.js -----
+import React from 'react';
+
+function HomePage() {
+  return (
+    <div className="page-text">
+      <h1>Home</h1> <hr />
+      <div className="intro-container">
+        <div className="intro-text">
+          <p>
+            dCorps (Decentralized Corporations) is a next-generation blockchain infrastructure that
+            enables anyone, anywhere to create and manage corporations or non-profit. By merging
+            blockchain transparency, decentralized finance, and borderless accessibility, dCorps
+            breaks down traditional barriers, making it perfectly suited for Web3, contributing to
+            the globalized digital economy. This pioneering platform also paves the way for an
+            interplanetary economy, defining the future of business in a decentralized world.
+          </p>
+        </div>
+        <div className="intro-image">
+          <img src="/circles.png" alt="dCorps illustration" />
+        </div>
+      </div>
+
+      <hr />
+      <h4 className="section-one-title">Section One Title</h4>
+      <p className="section-one-text">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod velit quis sapien
+        commodo, vel hendrerit libero aliquet. Morbi feugiat congue lectus, et pellentesque nulla
+        molestie vel.
+      </p>
+
+      <div className="section-one-cards-container" style={{ marginTop: '20px' }}>
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 1</h5>
+          <p className="section-one-card-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus quis sapien a augue
+            volutpat aliquam.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 2</h5>
+          <p className="section-one-card-text">
+            Etiam tincidunt mi in dui pretium, id ultrices massa aliquet.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 3</h5>
+          <p className="section-one-card-text">
+            Fusce commodo orci et felis imperdiet, a ullamcorper magna imperdiet.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 4</h5>
+          <p className="section-one-card-text">
+            Curabitur eget diam ac erat suscipit efficitur in et nisi.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 5</h5>
+          <p className="section-one-card-text">
+            Suspendisse potenti. Morbi convallis purus purus, quis lobortis arcu imperdiet at.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 6</h5>
+          <p className="section-one-card-text">
+            Donec vitae tellus vitae justo dignissim congue quis ac risus.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 7</h5>
+          <p className="section-one-card-text">
+            Quisque pulvinar metus at metus commodo, eget mollis lorem vestibulum.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 8</h5>
+          <p className="section-one-card-text">
+            Pellentesque fermentum, massa vitae vulputate accumsan, ex libero cursus enim, a
+            convallis nisi augue at nulla.
+          </p>
+        </div>
+
+        <div className="section-one-card">
+          <h5 className="section-one-card-title">Card Title 9</h5>
+          <p className="section-one-card-text">
+            Sed luctus magna in mauris auctor, sed luctus enim scelerisque.
+          </p>
+        </div>
+      </div>
+
+      <hr />
+      <h4>Section Two Title</h4>
+      <p>
+        Quisque tristique suscipit elit, in dapibus erat facilisis a. Phasellus feugiat ex non arcu
+        sodales, ac varius odio mollis. Praesent sed lorem a nunc finibus vestibulum.
+      </p>
+      <img
+        src="/sketch.png"
+        alt="Sketch - Section Two"
+        style={{ marginTop: '20px', maxWidth: '100%' }}
+      />
+    </div>
+  );
+}
+
+export default HomePage;
+
+----- File: ./src/pages/RoadmapPage.js -----
+// src/pages/RoadmapPage.js
+import React from 'react';
+
+function RoadmapPage() {
+  const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Roadmap</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default RoadmapPage;
+
+----- File: ./src/pages/SecurityPage.js -----
+// src/pages/SecurityPage.js
+import React from 'react';
+
+function SecurityPage() {
+  const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Security</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default SecurityPage;
+
+----- File: ./src/pages/TermsOfUsePage.js -----
+// src/pages/TermsOfUsePage.js
+import React from 'react';
+
+function TermsOfUsePage() {
+  const content = `Terms of Use: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Terms of Use</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default TermsOfUsePage;
+
+----- File: ./src/pages/TokenomicsPage.js -----
+// src/pages/TokenomicsPage.js
+import React from 'react';
+
+function TokenomicsPage() {
+  const content = `
+    <p>The tokenomics guiding the <strong>dCorps</strong> ecosystem is rooted ...</p>
+    <hr>
+    <h4>The dCorps Token: The Network’s Economic Backbone</h4>
+    <p>The <strong>dCorps</strong> token is more than just a means of exchange ...</p>
+    <p>Furthermore, each new sub-chain ...</p>
+    <hr>
+    <h4>dShares: Equity in a Decentralized Economy</h4>
+    <p>While the <strong>dCorps</strong> token secures the network ...</p>
+    <p>This dual structure creates a dynamic synergy ...</p>
+    <hr>
+    <h4>A Balanced, Adaptive Economic Model</h4>
+    <p>As the ecosystem matures, tokenomic parameters can be recalibrated ...</p>
+    <p>Meanwhile, dShares, backed by robust corporate governance ...</p>
+    <hr>
+    <h4>Integration with the Cosmos Ecosystem</h4>
+    <p>The strength of the <strong>dCorps</strong> tokenomics model ...</p>
+    <hr>
+    <h4>In Essence</h4>
+    <p>This tokenomic framework weaves together two distinct forms of value ...</p>
+  `;
+
+  return (
+    <div className="page-text">
+      <h1>Tokenomics</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default TokenomicsPage;
+
+----- File: ./src/pages/UseCasesPage.js -----
+// src/pages/UseCasesPage.js
+import React from 'react';
+
+function UseCasesPage() {
+  const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Use-Cases</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default UseCasesPage;
+
+----- File: ./src/pages/VisionPage.js -----
+// src/pages/VisionPage.js
+import React from 'react';
+
+function VisionPage() {
+  const content = `
+    <p>The vision behind this blockchain emerges from a fundamental belief that the way organizations are created, managed, and grown must evolve beyond rigid conventions. Instead of relying on centralized authorities and location bound entities, this perspective imagines a global framework where establishing and operating corporations, non profits, and new organizational models can occur transparently and with minimal friction. In this environment, anyone, regardless of cultural, economic, or geographic barriers, can initiate and nurture a venture while benefiting from automated trust mechanisms and verifiable truth rather than opaque intermediaries.</p>
+      <p>This forward looking viewpoint arises from the understanding that legacy structures, often tethered to restrictive borders and complicated bureaucracies, limit who can participate and how quickly they can adapt. By blending advanced blockchain technology, decentralized finance principles, and a deeply rooted ethos of inclusivity, the platform seeks to remove long standing gatekeepers. This shift translates into simpler governance, more equitable distribution of resources, and a more fluid alignment between stakeholders and the communities they serve.</p>
+      <p>Practical application of this vision means that small groups in remote villages can form cooperatives that enjoy the same level of secure transparency as multinational enterprises. Voting rights and resource allocations operate through smart contracts, ensuring each participant holds influence proportionate to their contributions. This approach mitigates corruption and reduces the potential for manipulation by anchoring every transaction, agreement, and governance rule in publicly verifiable code.</p>
+      <p>As we move toward a more digitally interconnected future defined by <strong>Web3</strong> and beyond, the scope of this vision extends past terrestrial boundaries. Emerging off world markets, orbital research stations, and interplanetary trade networks present opportunities to shape new economies that thrive on the principles of open participation, community consensus, and seamless interoperability. With an infrastructure that replaces cumbersome paperwork and time consuming intermediaries, organizations can move freely through ever expanding economic realms, better prepared to innovate, collaborate, and scale.</p>
+      <p>Ultimately, this vision centers on empowering individuals and communities to build, reimagine, and sustain the organizations that define our global future. The goal is to foster a landscape where ideas can flourish into thriving realities, where market entry is not restricted by borders, and where trust is derived from transparent cryptographic verification. This momentum paves the way for new paradigms of corporate life that are ready to serve the dynamic and inclusive economy of tomorrow.</p>
+  `;
+
+  return (
+    <div className="page-text">
+      <h1>Vision</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default VisionPage;
+
+----- File: ./src/pages/blockchain/MainHubPage.js -----
+// src/pages/blockchain/MainHubPage.js
+import React from 'react';
+
+function MainHubPage() {
+  const content = `Main Hub: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Main Hub</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default MainHubPage;
+
+----- File: ./src/pages/blockchain/SubChainPage.js -----
+// src/pages/blockchain/SubChainPage.js
+import React from 'react';
+
+function SubChainPage() {
+  const content = `Sub-Chain: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Sub-Chain</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default SubChainPage;
+
+----- File: ./src/pages/blockchain/SubHubPage.js -----
+// src/pages/blockchain/SubHubPage.js
+import React from 'react';
+
+function SubHubPage() {
+  const content = `Sub-Chain: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Sub-Hub</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default SubHubPage;
+
+----- File: ./src/pages/dCorps/CorporationPage.js -----
+// src/pages/dCorps/CorporationPage.js
+import React from 'react';
+
+function CorporationPage() {
+  const content = `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Corporation</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default CorporationPage;
+
+----- File: ./src/pages/dCorps/NonProfitPage.js -----
+// src/pages/dCorps/NonProfitPage.js
+import React from 'react';
+
+function NonProfitPage() {
+  const content = `Non-Profit: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Non-Profit</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default NonProfitPage;
+
+----- File: ./src/pages/dCorps/PublicCompanyPage.js -----
+// src/pages/dCorps/PublicCompanyPage.js
+import React from 'react';
+
+function PublicCompanyPage() {
+  const content = `Public Company: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Public Company</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default PublicCompanyPage;
+
+----- File: ./src/pages/ecosystem/DCorpsExplorerPage.js -----
+// src/pages/ecosystem/DCorpsExplorerPage.js
+import React from 'react';
+
+function DCorpsExplorerPage() {
+  const content = `dCorps Explorer: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>dCorps Explorer</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DCorpsExplorerPage;
+
+----- File: ./src/pages/ecosystem/DCorpsMarketplacePage.js -----
+// src/pages/ecosystem/DCorpsMarketplacePage.js
+import React from 'react';
+
+function DCorpsMarketplacePage() {
+  const content = `<strong>dCorps</strong> Marketplace: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>dCorps Marketplace</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DCorpsMarketplacePage;
+
+----- File: ./src/pages/ecosystem/DSharesExchangePage.js -----
+// src/pages/ecosystem/DSharesExchangePage.js
+import React from 'react';
+
+function DSharesExchangePage() {
+  const content = `dShares Exchange: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>dShares Exchange</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DSharesExchangePage;
+
+----- File: ./src/pages/ecosystem/DSharesInitialOfferingPage.js -----
+// src/pages/ecosystem/DSharesInitialOfferingPage.js
+import React from 'react';
+
+function DSharesInitialOfferingPage() {
+  const content = `dShares Initial Offering: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>dShares Initial Offering</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DSharesInitialOfferingPage;
+
+----- File: ./src/pages/ecosystem/InitialDexOfferingPage.js -----
+// src/pages/ecosystem/InitialDexOfferingPage.js
+import React from 'react';
+
+function InitialDexOfferingPage() {
+  const content = `Initial DEX Offering: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Initial DEX Offering</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default InitialDexOfferingPage;
+
+----- File: ./src/pages/ecosystem/InteroperabilityPage.js -----
+// src/pages/ecosystem/InteroperabilityPage.js
+import React from 'react';
+
+function InteroperabilityPage() {
+  const content = `Interoperability: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Interoperability</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default InteroperabilityPage;
+
+----- File: ./src/pages/ecosystem/NameServicePage.js -----
+// src/pages/ecosystem/NameServicePage.js
+import React from 'react';
+
+function NameServicePage() {
+  const content = `Name Service: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Name Service</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default NameServicePage;
+
+----- File: ./src/pages/ecosystem/TransferSupportPage.js -----
+// src/pages/ecosystem/TransferSupportPage.js
+import React from 'react';
+
+function TransferSupportPage() {
+  const content = `Transfer Support: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Transfer Support</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default TransferSupportPage;
+
+----- File: ./src/pages/suites/CryptoMerchantPage.js -----
+// src/pages/suites/CryptoMerchantPage.js
+import React from 'react';
+
+function CryptoMerchantPage() {
+  const content = `Crypto Merchant: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Crypto Merchant</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default CryptoMerchantPage;
+
+----- File: ./src/pages/suites/HrSystemPage.js -----
+// src/pages/suites/HrSystemPage.js
+import React from 'react';
+
+function HrSystemPage() {
+  const content = `RH System: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>HR System</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default HrSystemPage;
+
+----- File: ./src/pages/suites/InvoicingPayrollPage.js -----
+// src/pages/suites/InvoicingPayrollPage.js
+import React from 'react';
+
+function InvoicingPayrollPage() {
+  const content = `Invoicing & Payroll: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Invoicing & Payroll</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default InvoicingPayrollPage;
+
+----- File: ./src/pages/suites/TreasuryManagementPage.js -----
+// src/pages/suites/TreasuryManagementPage.js
+import React from 'react';
+
+function TreasuryManagementPage() {
+  const content = `Treasury Management: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Treasury Management</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default TreasuryManagementPage;
+
+----- File: ./src/pages/tokens/DcorpPage.js -----
+// src/pages/tokens/DcorpPage.js
+import React from 'react';
+
+function DcorpPage() {
+  const content = `dCorp Token: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>dCorp</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DcorpPage;
+
+----- File: ./src/pages/tokens/DsharesPage.js -----
+// src/pages/tokens/DsharesPage.js
+import React from 'react';
+
+function DsharesPage() {
+  const content = `dShares Token: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>dShares</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default DsharesPage;
+
+----- File: ./src/pages/tokens/OptionPage.js -----
+// src/pages/tokens/OptionPage.js
+import React from 'react';
+
+function OptionPage() {
+  const content = `Option Token: Lorem ipsum dolor sit amet, consectetur adipiscing elit.`;
+
+  return (
+    <div className="page-text">
+      <h1>Option</h1>
+      <hr />
+      <div dangerouslySetInnerHTML={{ __html: content }} />
+    </div>
+  );
+}
+
+export default OptionPage;
+
+----- File: ./src/reportWebVitals.js -----
+const reportWebVitals = onPerfEntry => {
+  if (onPerfEntry && onPerfEntry instanceof Function) {
+    import('web-vitals').then(({ getCLS, getFID, getFCP, getLCP, getTTFB }) => {
+      getCLS(onPerfEntry);
+      getFID(onPerfEntry);
+      getFCP(onPerfEntry);
+      getLCP(onPerfEntry);
+      getTTFB(onPerfEntry);
+    });
+  }
+};
+
+export default reportWebVitals;
+
+----- File: ./src/setupTests.js -----
+// jest-dom adds custom jest matchers for asserting on DOM nodes.
+// allows you to do things like:
+// expect(element).toHaveTextContent(/react/i)
+// learn more: https://github.com/testing-library/jest-dom
+import '@testing-library/jest-dom';
+
+-----------------------------------------------
+Extraction complete! Check extracted_content.txt.
