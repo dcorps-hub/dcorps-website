@@ -16,7 +16,6 @@
 
 # Gatsby files
 /.cache
-/public
 
 # Create React App local env files
 .env.local
